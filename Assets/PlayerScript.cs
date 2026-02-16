@@ -5,19 +5,24 @@ public class PlayerScript : MonoBehaviour
 {
 
     public Rigidbody2D pRb2d;
+    
     public InputActionReference movement;
+    public InputActionReference jumping;
+    
     public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
     
     public Vector2 direction;
-    
-    
+
+
     public float speed;
+    public float jump;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        Debug.Log("Start");
     }
 
     // Update is called once per frame
@@ -25,14 +30,10 @@ public class PlayerScript : MonoBehaviour
     {
         direction = movement.action.ReadValue<Vector2>();
 
-        if (Grounded())
+        if (jumping.action.WasPressedThisFrame() && Grounded())
         {
-            Debug.Log("Player is grounded");
-            
-        }
-        else
-        {
-            Debug.Log("Player is in air");
+            Debug.Log("Jumping");
+            pRb2d.AddForce(new Vector2(pRb2d.linearVelocity.x, jump * 10));
         }
     }
 
