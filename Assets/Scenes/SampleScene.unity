@@ -219,6 +219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 296224980}
   - component: {fileID: 296224979}
+  - component: {fileID: 296224981}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -262,7 +263,7 @@ Transform:
   m_GameObject: {fileID: 296224978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.84, y: -1.72, z: 0}
+  m_LocalPosition: {x: 8.46, y: 1.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -271,6 +272,30 @@ Transform:
   - {fileID: 1243670047}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &296224981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296224978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60bd4baed81c9244fa99d441e34001ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyScirpt
+  enemyRB: {fileID: 296224979}
+  player: {fileID: 848018595}
+  direction: {x: 0, y: 0}
+  attackReady: 0
+  players:
+    serializedVersion: 2
+    m_Bits: 128
+  attackPoint: {fileID: 1243670046}
+  boxSize: {x: 0, y: 0}
+  castDistance: -0.15
+  atkBox: {x: 2.52, y: 2.38}
+  speed: 10
 --- !u!1 &299478866
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +337,7 @@ GameObject:
   m_Component:
   - component: {fileID: 455307654}
   - component: {fileID: 455307655}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +715,7 @@ GameObject:
   - component: {fileID: 848018598}
   - component: {fileID: 848018597}
   - component: {fileID: 848018596}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -720,7 +745,7 @@ MonoBehaviour:
     m_Bits: 8
   direction: {x: 0, y: 0}
   speed: 50
-  jump: 100
+  jump: 1000
   attackPoint: {fileID: 299478866}
   atkBox: {x: 2.69, y: -2.41}
   atkCastDis: 0
@@ -763,7 +788,7 @@ Transform:
   m_GameObject: {fileID: 848018595}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.83, y: -1.72, z: 0}
+  m_LocalPosition: {x: -10.4, y: -1.72, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -797,7 +822,7 @@ Transform:
   m_GameObject: {fileID: 1243670046}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.44, y: -0.09, z: 0}
+  m_LocalPosition: {x: -2.25, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
