@@ -25,6 +25,9 @@ public class PlayerScript : MonoBehaviour
     public float atkCastDis;
     public LayerMask enemies;
     
+    [Header("Basic attributes")]
+    public float Damage;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,6 +38,12 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         direction = movement.action.ReadValue<Vector2>();
+        Vector3 move = new Vector3(direction.x, 0, direction.y);
+        
+        if (move != Vector3.zero)
+        {
+            transform.localScale = new Vector3(move.x, 1f, 1f);
+        }
 
         if (jumping.action.WasPressedThisFrame() && Grounded())
         {
@@ -63,10 +72,18 @@ public class PlayerScript : MonoBehaviour
     // Will be actived by anim event (for now, the moment input is pressed)
     void Attack()
     {
+        
         Collider2D[] enemy = Physics2D.OverlapBoxAll(attackPoint.transform.position, atkBox, 0, enemies);
 
         foreach (Collider2D enemyGameObject in enemy)
         {
+            EnemyScript enemyScript = enemyGameObject.GetComponent<EnemyScript>();
+            
+            if (enemyScript != null)
+            {
+                enemyScript.Damaged(Damage);
+            }
+            
             Debug.Log("Enemy is hit!");
         }
     }
