@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
-
+    private FlashScript flash;
+    private ComboScript combo;
+    [SerializeField] private BloodScript blood;
+    
     public Rigidbody2D pRb2d;
     
     public InputActionReference movement;
@@ -25,24 +28,45 @@ public class PlayerScript : MonoBehaviour
     public float atkCastDis;
     public LayerMask enemies;
     
+    [Header("Sounds")]
+    public AudioSource soundManager;
+    public AudioClip attackSound;
+    public AudioClip[] hitSound;
+    
     [Header("Basic attributes")]
-    public float Damage;
+    public float Health;
+    public float maxHealth;
+    public float baseDamage;
+    
+    public Animator animator;
+    
+    public bool isKnockedBack;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        flash = GetComponentInChildren<FlashScript>();
+        combo = GetComponent<ComboScript>();
+        
         Debug.Log("Start");
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isKnockedBack) return;
+        
         direction = movement.action.ReadValue<Vector2>();
         Vector3 move = new Vector3(direction.x, 0, direction.y);
         
         if (move != Vector3.zero)
         {
             transform.localScale = new Vector3(move.x, 1f, 1f);
+            animator.SetBool("Walking", true);
+        }
+        else
+        {
+            animator.SetBool("Walking", false);
         }
 
         if (jumping.action.WasPressedThisFrame() && Grounded())
@@ -54,7 +78,12 @@ public class PlayerScript : MonoBehaviour
 
         if (attack.action.WasPressedThisFrame() && Grounded())
         {
-            Attack();
+            if (combo.comboStep == 0)
+                combo.StartCombo();
+            else if (combo.canCombo)
+                combo.ComboStep();
+            else
+                combo.InputBuffer = true;
         }
         
     }
@@ -70,7 +99,7 @@ public class PlayerScript : MonoBehaviour
     }
     
     // Will be actived by anim event (for now, the moment input is pressed)
-    void Attack()
+    public void Attack()
     {
         
         Collider2D[] enemy = Physics2D.OverlapBoxAll(attackPoint.transform.position, atkBox, 0, enemies);
@@ -81,11 +110,56 @@ public class PlayerScript : MonoBehaviour
             
             if (enemyScript != null)
             {
-                enemyScript.Damaged(Damage);
+                AudioClip hits = hitSound[combo.comboStep - 1];
+                soundManager.PlayOneShot(hits);
+                
+                enemyScript.Damaged(baseDamage);
+                enemyScript.PlayBlood(transform);
+                
+                StartCoroutine(enemyScript.Knockback(transform, 30f, 0.4f));
             }
             
             Debug.Log("Enemy is hit!");
         }
+    }
+
+    public void Damage(float damage)
+    {
+        Health -= damage;
+        
+     //   Debug.Log($"I have been damaged {damage}, remaining health: {Health}");
+        
+        flash.Flash();
+        
+        if (Health <= 0)
+        {
+            Debug.Log("Player is dead");
+            
+            Health = maxHealth;
+        }
+    }
+    
+    public void PlayBlood(Transform source)
+    {
+        Vector2 attackerPos = ((Vector2)transform.position - (Vector2)source.position).normalized;
+        Vector2 posDir = new Vector2(attackerPos.x, 0f).normalized;
+        
+        blood.SpawnBlood(transform, posDir);
+    }
+    
+    public IEnumerator Knockback(Transform source , float knockbackForce, float duration)
+    {
+        isKnockedBack = true;
+        
+        Vector2 directionToTarget = ((Vector2)transform.position - (Vector2)source.position).normalized;
+        Vector2 knockbackDir = new Vector2(directionToTarget.x, 0f).normalized;
+        
+        pRb2d.linearVelocity = Vector2.zero; // Cancel existing movement
+        pRb2d.linearVelocity = new Vector2(knockbackDir.x * knockbackForce, 0f);
+        
+        yield return new WaitForSeconds(duration);
+        
+        isKnockedBack = false;
     }
 
     private void OnDrawGizmos()
