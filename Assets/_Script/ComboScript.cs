@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,21 +11,16 @@ public class ComboScript : MonoBehaviour
     public bool InputBuffer;
     public int comboStep;
     public bool canCombo;
-    private int maxCombo = 5;
+    public int maxCombo = 5;
+
+    public bool OnComboCooldown;
+    private float comboResetTime = 5f;
     
     private float comboTimer = 2.0f;
-    [SerializeField]private float lastAttackTime;
     
-    private float comboWindow = 1.5f;
+    private float comboWindow = 0.5f;
     private void Update()
     {
-        if (Time.time - lastAttackTime <= comboWindow)
-            ComboWindow();
-        if (Time.time - lastAttackTime >= comboWindow && canCombo)
-            CloseComboWindow();
-        
-        if (comboStep > 0 && Time.time - lastAttackTime >= comboTimer)
-            ComboEnd();
         
     }
 
@@ -40,10 +36,11 @@ public class ComboScript : MonoBehaviour
         if (comboStep == 0)
         {
             Debug.Log("Combo started");
-            lastAttackTime = Time.time;
             comboStep = 1;
-            player.Attack();
-//            animator.SetTrigger("Attack");
+            animator.Play("Attack 1");
+            
+            player.pRb2d.linearVelocity = Vector2.zero;
+            player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
 
             RandomSoundPitching();
         }
@@ -54,12 +51,13 @@ public class ComboScript : MonoBehaviour
     {
         RandomSoundPitching();
         
-        lastAttackTime = Time.time;
         comboStep++;
         canCombo = false;
         InputBuffer = false;
-        player.Attack();
-      //  animator.SetTrigger("Attack" + comboStep);
+        animator.Play("Attack " + comboStep);
+        
+        player.pRb2d.linearVelocity = Vector2.zero;
+        player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
         
         Debug.Log("Combo step " + comboStep);
         
@@ -78,10 +76,24 @@ public class ComboScript : MonoBehaviour
     public void CloseComboWindow()
     {
         Debug.Log("Combo window closed");
-        if (InputBuffer) ComboStep();
+        if (InputBuffer && !OnComboCooldown) ComboStep();
         else canCombo = false;    
     }
     
     // Called by event in last attack animation
-    public void ComboEnd() => comboStep = 0;
+    public void ComboEnd()
+    { 
+        comboStep = 0;
+        StartCoroutine(ComboCooldown());
+    }
+
+    private IEnumerator ComboCooldown()
+    {
+        OnComboCooldown = true;
+        Debug.Log("On cooldown");
+        yield return new WaitForSeconds(comboResetTime);
+        Debug.Log("Can combo now");
+        OnComboCooldown = false;
+        
+    }
 }

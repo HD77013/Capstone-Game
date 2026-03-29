@@ -42,6 +42,8 @@ public class PlayerScript : MonoBehaviour
     
     public bool isKnockedBack;
     
+    public float forwardForce;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -78,9 +80,9 @@ public class PlayerScript : MonoBehaviour
 
         if (attack.action.WasPressedThisFrame() && Grounded())
         {
-            if (combo.comboStep == 0)
+            if (combo.comboStep == 0 && !combo.OnComboCooldown)
                 combo.StartCombo();
-            else if (combo.canCombo)
+            else if (combo.canCombo && combo.comboStep > 0 && !combo.OnComboCooldown)
                 combo.ComboStep();
             else
                 combo.InputBuffer = true;
@@ -110,7 +112,7 @@ public class PlayerScript : MonoBehaviour
             
             if (enemyScript != null)
             {
-                AudioClip hits = hitSound[combo.comboStep - 1];
+                AudioClip hits = hitSound[combo.comboStep];
                 soundManager.PlayOneShot(hits);
                 
                 enemyScript.Damaged(baseDamage);
@@ -160,6 +162,11 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(duration);
         
         isKnockedBack = false;
+    }
+    
+    public float GetFacingDirection()
+    {
+        return transform.localScale.x; // Returns 1 for right, -1 for left
     }
 
     private void OnDrawGizmos()
