@@ -58,13 +58,16 @@ public class EnemyScript : MonoBehaviour
     public float speed;
     public float chaseSpeed;
 
+    [Header("Animation")] 
+    public Animator animator;
+    private int attackAnim;
+    
+
     [SerializeField] private Vector2 follow;
 
     [SerializeField] private bool isKnockedBack;
 
     public Vector2 wanderPoints;
-    
-    public Animator animator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -87,9 +90,8 @@ public class EnemyScript : MonoBehaviour
         
         if (isKnockedBack)
         {
-            Debug.Log("Enemy is in atk cooldown after knockback");
             cooldown = 10.0f;
-            Debug.Log("Cooldown was " + cooldown);
+
         }
         
         if (isKnockedBack) return;
@@ -219,25 +221,20 @@ public class EnemyScript : MonoBehaviour
     {
         if (Time.time - lastAttackTime >= attackCooldownDuration && canAttack && CheckAttack())
         {
-            Debug.Log("Cooldown was " + cooldown);
             soundManager.PlayOneShot(attackSound);
             
-            Debug.Log("Player is is ranged");
-            StartCoroutine(AttackingRoutine());
+            attackAnim = Random.Range(1, 3);
+            animator.Play("Attack " + attackAnim);
             
             lastAttackTime = Time.time;
             canAttack = false;
         }
 
-
     }
 
-    IEnumerator AttackingRoutine()
+    // Activated via animation event
+    public void ActivatePlrDMG()
     {
-        yield return new WaitForSeconds(0.5f);
-        
-        Debug.Log("Attack is activated");
-        
         if (CheckAttack())
         {
             soundManager.PlayOneShot(hitSound);
@@ -250,9 +247,10 @@ public class EnemyScript : MonoBehaviour
             
             Debug.Log("Player is damaged");
         }
-        
-        yield return new WaitForSeconds(0.5f);
-        
+    }
+
+    public void EndAttack()
+    {
         canAttack = true;
     }
     

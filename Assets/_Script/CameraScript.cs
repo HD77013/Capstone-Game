@@ -4,6 +4,11 @@ public class CameraScript : MonoBehaviour
 {
     public Transform Camera;
     public Transform player;
+
+    public float shake;
+    public float shakeAmount = 0.7f;
+    public float decreaseFactor = 0.5f;
+    
     
     [SerializeField]private float lerpSpeed = 1.0f;
     
@@ -21,7 +26,17 @@ public class CameraScript : MonoBehaviour
     {
         Vector3 playerPos = new Vector3(player.position.x, player.position.y, -1f);
         
-        transform.position = Vector3.Lerp(Camera.position, playerPos, lerpSpeed * Time.deltaTime);
+        Vector3 follow = Vector3.Lerp(Camera.position, playerPos, lerpSpeed * Time.deltaTime);
+        
+        if (shake > 0) {
+            Vector3 cam = Random.insideUnitSphere * shakeAmount;
+            transform.position = follow + new Vector3(cam.x * follow.x, cam.y * follow.y, -1f);
+            shake -= Time.deltaTime * decreaseFactor;
+
+        } else {
+            shake = 0f;
+            transform.position = follow;
+        }
         
     }
 }

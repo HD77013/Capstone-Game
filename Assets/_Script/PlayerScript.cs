@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
-    private FlashScript flash;
-    private ComboScript combo;
+    [SerializeField] private FlashScript flash;
+    [SerializeField] private ComboScript combo;
     [SerializeField] private BloodScript blood;
+    [SerializeField] private CameraScript camera;
     
     public Rigidbody2D pRb2d;
     
@@ -47,10 +48,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        flash = GetComponentInChildren<FlashScript>();
-        combo = GetComponent<ComboScript>();
-        
-        Debug.Log("Start");
+        flash = GetComponent<FlashScript>();
     }
 
     // Update is called once per frame
@@ -115,11 +113,17 @@ public class PlayerScript : MonoBehaviour
                 AudioClip hits = hitSound[combo.comboStep];
                 soundManager.PlayOneShot(hits);
                 
+                camera.shake = 0.05f;
+                
                 enemyScript.Damaged(baseDamage);
                 enemyScript.PlayBlood(transform);
                 
                 StartCoroutine(enemyScript.Knockback(transform, 30f, 0.4f));
+                
+                
             }
+            
+            
             
             Debug.Log("Enemy is hit!");
         }
@@ -128,8 +132,6 @@ public class PlayerScript : MonoBehaviour
     public void Damage(float damage)
     {
         Health -= damage;
-        
-     //   Debug.Log($"I have been damaged {damage}, remaining health: {Health}");
         
         flash.Flash();
         

@@ -7,7 +7,7 @@ public class FlashScript : MonoBehaviour {
     public Color flashColor;
     public float flashDuration;
 
-    Material mat;
+    [SerializeField]private Material mat;
 
     private IEnumerator flashCoroutine;
 

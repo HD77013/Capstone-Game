@@ -21,13 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 7132338869747836053, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - time: 0.1
-      value: {fileID: 3377162832827355255, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - time: 0.28333333
-      value: {fileID: -223438143571612576, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - time: 0.4
-      value: {fileID: -223438143571612576, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
+      value: {fileID: 2546956466112097874, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - time: 0.16666667
+      value: {fileID: 8533658678622756619, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - time: 0.33333334
+      value: {fileID: 1835970050623859235, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - time: 0.48333332
+      value: {fileID: 1835970050623859235, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,16 +50,16 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 7132338869747836053, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - {fileID: 3377162832827355255, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - {fileID: -223438143571612576, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
-    - {fileID: -223438143571612576, guid: 9b944f399c823bc4d969116894c3de98, type: 3}
+    - {fileID: 2546956466112097874, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - {fileID: 8533658678622756619, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - {fileID: 1835970050623859235, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
+    - {fileID: 1835970050623859235, guid: 6310a3830fd34c242bff4bf3832d1031, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.4166667
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -79,29 +79,15 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.1
-    functionName: Attack
+  - time: 0.16666667
+    functionName: DamageCheck
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.28333333
-    functionName: OpenWindow
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.38333333
-    functionName: CloseWindow
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.4
-    functionName: ComboEnd
+  - time: 0.48333332
+    functionName: EndAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

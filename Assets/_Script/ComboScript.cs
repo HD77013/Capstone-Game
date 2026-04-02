@@ -14,14 +14,16 @@ public class ComboScript : MonoBehaviour
     public int maxCombo = 5;
 
     public bool OnComboCooldown;
-    private float comboResetTime = 5f;
+    private float comboResetTime = 1f;
     
     private float comboTimer = 2.0f;
     
     private float comboWindow = 0.5f;
+
+    private float lastAttackTime;
     private void Update()
     {
-        
+
     }
 
     private void RandomSoundPitching()
@@ -59,40 +61,40 @@ public class ComboScript : MonoBehaviour
         player.pRb2d.linearVelocity = Vector2.zero;
         player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
         
-        Debug.Log("Combo step " + comboStep);
-        
         if (comboStep >= maxCombo)
         {
             ComboEnd();
         }
+        
     }
     
     // Called by animation events
     public void ComboWindow()
     {
-        Debug.Log("Combo window opened"); 
         canCombo = true;
     }
+    // Called towards the end of the animation
     public void CloseComboWindow()
     {
-        Debug.Log("Combo window closed");
         if (InputBuffer && !OnComboCooldown) ComboStep();
         else canCombo = false;    
     }
     
-    // Called by event in last attack animation
+    // Called by event in very last keyframe of animation
     public void ComboEnd()
     { 
         comboStep = 0;
+        InputBuffer = false;
+        animator.SetTrigger("End Combo");
+        animator.SetInteger("Combo", 0);
         StartCoroutine(ComboCooldown());
     }
 
     private IEnumerator ComboCooldown()
     {
         OnComboCooldown = true;
-        Debug.Log("On cooldown");
         yield return new WaitForSeconds(comboResetTime);
-        Debug.Log("Can combo now");
+        
         OnComboCooldown = false;
         
     }
