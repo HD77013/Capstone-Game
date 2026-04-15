@@ -7,6 +7,8 @@ public class EnemyScript : MonoBehaviour
     public Rigidbody2D enemyRB;
 
     public GameObject player;
+    private PlayerScript _playerScript;
+    private ComboScript _combo;
 
     public Vector2 direction;
     
@@ -18,6 +20,7 @@ public class EnemyScript : MonoBehaviour
     [Header("Attack Logic")]
     public GameObject attackPoint;
     public Vector2 boxSize;
+    private bool isAttacking;
     public float castDistance;
     public Vector2 atkBox;
     public bool canAttack;
@@ -58,6 +61,12 @@ public class EnemyScript : MonoBehaviour
     public float speed;
     public float chaseSpeed;
 
+    [Header("Block")] 
+    public int blockChance;
+    private bool isDamaged;
+    public bool isBlocking;
+    public bool hasBlockedThisCombo;
+
     [Header("Animation")] 
     public Animator animator;
     private int attackAnim;
@@ -72,6 +81,10 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         flash = GetComponent<FlashScript>();
+
+        _playerScript = player.GetComponent<PlayerScript>();
+
+        _combo = player.GetComponent<ComboScript>();
         
         randomTime = Random.Range(minWalkTime, maxWalkTime);
         
@@ -88,12 +101,6 @@ public class EnemyScript : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= randomTime) StateChange();
         
-        if (isKnockedBack)
-        {
-            cooldown = 10.0f;
-
-        }
-        
         if (isKnockedBack) return;
         
         CheckAttack();
@@ -104,16 +111,58 @@ public class EnemyScript : MonoBehaviour
 
     private void FixedUpdate()
     { 
+        if (_combo.comboStep == 0)
+        {
+            // Resets block behabiour if player's combo resets
+            hasBlockedThisCombo = false;
+            isBlocking = false;
+        }
+        
+        if (_playerScript.isAttacking && _combo.comboStep >= 1 && !hasBlockedThisCombo)
+        {
+            hasBlockedThisCombo = true;
+            
+            blockChance = Random.Range(0, 101);
+
+            if (blockChance <= 90)
+            {
+                isBlocking = true;
+                
+                Debug.Log("Enemy has blocked");
+
+                if (isDamaged)
+                {
+                    isDamaged = false;
+                    isBlocking = false;
+                    
+
+                }
+            }
+            else
+            {
+                isDamaged = false;
+                isBlocking = false;
+            }
+        }
+        
         if (isKnockedBack) return; // Other movement logic is stops upon enemy being knocked back
         
         if (canChase)
         {
             // Chase player
-             follow = (player.transform.position - transform.position); // Player position
-            enemyRB.linearVelocity = new Vector2(chaseSpeed * follow.x, enemyRB.linearVelocity.y); // Enemy follow player via x value but y is not affected
+            follow = (player.transform.position - transform.position); // Player position
             wandering = false;
             centered = false;
-            
+
+            if (Mathf.Abs(follow.x) > 1.0f && !isAttacking && !canAttack) // Too close - move away
+            {
+                enemyRB.linearVelocity = new Vector2(chaseSpeed * -follow.x, enemyRB.linearVelocity.y);
+            }
+            else // Normal chase - move toward
+            {
+                enemyRB.linearVelocity = new Vector2(chaseSpeed * follow.x, enemyRB.linearVelocity.y);
+            }
+                
             if (Mathf.Abs(follow.x) > 0.01f)
             {
                 facingDirection = follow.x < 0 ? -1f : 1f;
@@ -135,11 +184,23 @@ public class EnemyScript : MonoBehaviour
 
     public void Damaged(float damage)
     {
-        Health -= damage;
+        isDamaged = true;
+
+        if (!isBlocking)
+        {
+            Health -= damage;
         
-        flash.Flash();
+            flash.Flash();
+        }
+        else
+        {
+            Health -= damage / 2;
+
+            isBlocking = false;
+            
+            animator.Play("Block");
+        }
         
-      //  Debug.Log($"I have been damaged {damage}, remaining health: {Health}");
         
         if (Health <= 0)
         {
@@ -152,15 +213,17 @@ public class EnemyScript : MonoBehaviour
     {
         Vector2 attackerPos = ((Vector2)transform.position - (Vector2)source.position).normalized;
         Vector2 posDir = new Vector2(attackerPos.x, 0f).normalized;
-        
-        blood.SpawnBlood(transform, posDir);
+
+        if (!isBlocking)
+        {
+            blood.SpawnBlood(transform, posDir);
+        }
+
     }
     
     public IEnumerator Knockback(Transform source , float knockbackForce, float duration)
     {
         isKnockedBack = true;
-        
-        lastAttackTime += 2.0f; // Add 2 seconds to cooldown
         
         Vector2 directionToTarget = ((Vector2)transform.position - (Vector2)source.position).normalized;
         Vector2 knockbackDir = new Vector2(directionToTarget.x, 0f).normalized;
@@ -219,7 +282,12 @@ public class EnemyScript : MonoBehaviour
     
     private void Attack()
     {
-        if (Time.time - lastAttackTime >= attackCooldownDuration && canAttack && CheckAttack())
+        if (Time.time - lastAttackTime >= attackCooldownDuration)
+        {
+            canAttack = true;
+        }
+        
+        if (canAttack && CheckAttack())
         {
             soundManager.PlayOneShot(attackSound);
             
@@ -228,6 +296,7 @@ public class EnemyScript : MonoBehaviour
             
             lastAttackTime = Time.time;
             canAttack = false;
+            isAttacking = true;
         }
 
     }
@@ -251,7 +320,7 @@ public class EnemyScript : MonoBehaviour
 
     public void EndAttack()
     {
-        canAttack = true;
+        isAttacking = false;
     }
     
     void ApplyFacing()

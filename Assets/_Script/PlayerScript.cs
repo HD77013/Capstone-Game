@@ -28,11 +28,14 @@ public class PlayerScript : MonoBehaviour
     public Vector2 atkBox;
     public float atkCastDis;
     public LayerMask enemies;
+
+    public bool isAttacking;
     
     [Header("Sounds")]
     public AudioSource soundManager;
     public AudioClip attackSound;
     public AudioClip[] hitSound;
+    public AudioClip[] blockedSound;
     
     [Header("Basic attributes")]
     public float Health;
@@ -44,6 +47,8 @@ public class PlayerScript : MonoBehaviour
     public bool isKnockedBack;
     
     public float forwardForce;
+
+    public float knockbackCooldown;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -110,15 +115,23 @@ public class PlayerScript : MonoBehaviour
             
             if (enemyScript != null)
             {
-                AudioClip hits = hitSound[combo.comboStep];
-                soundManager.PlayOneShot(hits);
+                if (enemyScript.isBlocking)
+                {
+                    AudioClip blocked = blockedSound[combo.comboStep];
+                    soundManager.PlayOneShot(blocked);
+                }
+                else
+                {
+                    AudioClip hits = hitSound[combo.comboStep];
+                    soundManager.PlayOneShot(hits);
+                }
                 
                 camera.shake = 0.05f;
                 
                 enemyScript.Damaged(baseDamage);
                 enemyScript.PlayBlood(transform);
                 
-                StartCoroutine(enemyScript.Knockback(transform, 30f, 0.4f));
+                StartCoroutine(enemyScript.Knockback(transform, 30f, knockbackCooldown));
                 
                 
             }

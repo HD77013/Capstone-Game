@@ -353,11 +353,14 @@ MonoBehaviour:
   soundManager: {fileID: 296224983}
   attackSound: {fileID: 8300000, guid: 0e9bca6dd55d7e541a865752da6415f5, type: 3}
   hitSound: {fileID: 8300000, guid: 1f53a5fc6bd934e46a5d8cfa8fd27b64, type: 3}
-  attackCooldownDuration: 2
+  attackCooldownDuration: 5
   Health: 999
   Damage: 1
   speed: 10
   chaseSpeed: 1
+  blockChance: 0
+  isBlocking: 0
+  hasBlockedThisCombo: 0
   animator: {fileID: 1814054390}
   follow: {x: 0, y: 0}
   isKnockedBack: 0
@@ -519,6 +522,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpriteFlash
   flashColor: {r: 1, g: 1, b: 1, a: 0}
   flashDuration: 0.5
+  mat: {fileID: 0}
 --- !u!114 &296224985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -957,7 +961,6 @@ GameObject:
   - component: {fileID: 848018602}
   - component: {fileID: 848018603}
   - component: {fileID: 848018605}
-  - component: {fileID: 848018604}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -999,6 +1002,7 @@ MonoBehaviour:
   enemies:
     serializedVersion: 2
     m_Bits: 64
+  isAttacking: 0
   soundManager: {fileID: 848018600}
   attackSound: {fileID: 8300000, guid: 0e9bca6dd55d7e541a865752da6415f5, type: 3}
   hitSound:
@@ -1006,12 +1010,18 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e82879725b40ce444bca27d19a75f42c, type: 3}
   - {fileID: 8300000, guid: 1f53a5fc6bd934e46a5d8cfa8fd27b64, type: 3}
   - {fileID: 8300000, guid: 58a5d36d6b134014ea5623d9802082e2, type: 3}
+  blockedSound:
+  - {fileID: 8300000, guid: 74198389e177d0948b63ca9a3fb22801, type: 3}
+  - {fileID: 8300000, guid: e5ecc98ff40556543b77c8c2aa090822, type: 3}
+  - {fileID: 8300000, guid: e5ecc98ff40556543b77c8c2aa090822, type: 3}
+  - {fileID: 8300000, guid: 72a9b2a2a3eaa584d9ba3a8e2166f0fd, type: 3}
   Health: 10
   maxHealth: 10
   baseDamage: 1
   animator: {fileID: 147778774}
   isKnockedBack: 0
   forwardForce: 20
+  knockbackCooldown: 2
 --- !u!50 &848018597
 Rigidbody2D:
   serializedVersion: 5
@@ -1213,6 +1223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlashScript
   flashColor: {r: 0.9960785, g: 0.9960785, b: 0.9960785, a: 0}
   flashDuration: 0.5
+  mat: {fileID: 0}
 --- !u!114 &848018602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1245,64 +1256,6 @@ MonoBehaviour:
   canCombo: 0
   maxCombo: 4
   OnComboCooldown: 0
---- !u!212 &848018604
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848018595}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -5031698946450957990, guid: 9aaa27c2bfb41ad4996c144c820cc1c6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 0.22, y: 0.38}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!95 &848018605
 Animator:
   serializedVersion: 7
@@ -1350,7 +1303,7 @@ Transform:
   m_GameObject: {fileID: 1243670046}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.25, y: -0.09, z: 0}
+  m_LocalPosition: {x: 0.56, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

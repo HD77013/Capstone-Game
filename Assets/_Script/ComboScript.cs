@@ -40,6 +40,8 @@ public class ComboScript : MonoBehaviour
             Debug.Log("Combo started");
             comboStep = 1;
             animator.Play("Attack 1");
+
+            player.isAttacking = true;
             
             player.pRb2d.linearVelocity = Vector2.zero;
             player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
@@ -57,6 +59,8 @@ public class ComboScript : MonoBehaviour
         canCombo = false;
         InputBuffer = false;
         animator.Play("Attack " + comboStep);
+        
+        player.isAttacking = true;
         
         player.pRb2d.linearVelocity = Vector2.zero;
         player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
@@ -84,6 +88,7 @@ public class ComboScript : MonoBehaviour
     public void ComboEnd()
     { 
         comboStep = 0;
+        player.isAttacking = false;
         InputBuffer = false;
         animator.SetTrigger("End Combo");
         animator.SetInteger("Combo", 0);
