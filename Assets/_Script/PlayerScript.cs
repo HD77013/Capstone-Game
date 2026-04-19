@@ -36,6 +36,10 @@ public class PlayerScript : MonoBehaviour
     public AudioClip attackSound;
     public AudioClip[] hitSound;
     public AudioClip[] blockedSound;
+
+    [Header("Blocking")] 
+    public InputActionReference block;
+    private bool blocking;
     
     [Header("Basic attributes")]
     public float Health;
@@ -76,7 +80,6 @@ public class PlayerScript : MonoBehaviour
 
         if (jumping.action.WasPressedThisFrame() && Grounded())
         {
-            Debug.Log("Jumping");
             pRb2d.AddForce(new Vector2(pRb2d.linearVelocity.x, jump));
         }
 
@@ -90,7 +93,22 @@ public class PlayerScript : MonoBehaviour
             else
                 combo.InputBuffer = true;
         }
+
+        if (block.action.WasPressedThisFrame() && Grounded())
+        {
+            blocking = true;
+            
+            animator.SetBool("Blocking", true);
+
+
+        }
         
+        if (block.action.WasReleasedThisFrame())
+        {
+            blocking = false;
+                
+            animator.SetBool("Blocking", false);
+        }
     }
 
     private void FixedUpdate()
@@ -144,9 +162,17 @@ public class PlayerScript : MonoBehaviour
 
     public void Damage(float damage)
     {
-        Health -= damage;
+        if (!blocking)
+        {
+            Health -= damage;
         
-        flash.Flash();
+            flash.Flash();
+        }
+        else
+        {
+            animator.Play("Block Reaction");
+        }
+        
         
         if (Health <= 0)
         {
