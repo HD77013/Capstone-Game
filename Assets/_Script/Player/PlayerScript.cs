@@ -4,32 +4,40 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
-    [SerializeField] private FlashScript flash;
-    [SerializeField] private ComboScript combo;
-    [SerializeField] private BloodScript blood;
-    [SerializeField] private CameraScript camera;
+    private enum CurrentPlayerStates { Idle, Walk, Jumping, Attack, Damaged, Blocking,}
+    [SerializeField] private CurrentPlayerStates state;
     
     public Rigidbody2D pRb2d;
-    
-    public InputActionReference movement;
-    public InputActionReference jumping;
-    public InputActionReference attack;
+    public Vector2 direction;
     
     public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
     
-    public Vector2 direction;
+    public Animator animator;
     
-    public float speed;
-    public float jump;
-
+    [Header("ReferencedScripts")]
+    [SerializeField] private FlashScript flash;
+    [SerializeField] private ComboScript combo;
+    [SerializeField] private BloodScript blood;
+    [SerializeField] private CameraScript camera;
+    
+    [Header("Keybinds")]
+    public InputActionReference movement;
+    public InputActionReference jumping;
+    public InputActionReference attack;
+    
+    [Header("Attack Logic")]
     public GameObject attackPoint;
     public Vector2 atkBox;
     public float atkCastDis;
     public LayerMask enemies;
-
     public bool isAttacking;
+    
+    [Header("Knockback/Damage Logic")]
+    public bool isKnockedBack;
+    public float forwardForce;
+    public float knockbackCooldown;
     
     [Header("Sounds")]
     public AudioSource soundManager;
@@ -45,14 +53,8 @@ public class PlayerScript : MonoBehaviour
     public float Health;
     public float maxHealth;
     public float baseDamage;
-    
-    public Animator animator;
-    
-    public bool isKnockedBack;
-    
-    public float forwardForce;
-
-    public float knockbackCooldown;
+    public float speed;
+    public float jump;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,8 +65,52 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isKnockedBack) return;
+        switch (state)
+        {
+            case CurrentPlayerStates.Idle:
+                break;
+            case CurrentPlayerStates.Walk:
+                Walking();
+                break;
+            case CurrentPlayerStates.Jumping:
+                break;
+            case CurrentPlayerStates.Attack:
+                StartAttack();
+                break;
+            case CurrentPlayerStates.Damaged:
+                break;
+            case CurrentPlayerStates.Blocking:
+                break;
+        }
+
+        if (movement.action.WasPressedThisFrame())
+            state = CurrentPlayerStates.Walk;
         
+        if (attack.action.WasPressedThisFrame() && Grounded())
+            state = CurrentPlayerStates.Attack;
+
+        if (jumping.action.WasPressedThisFrame() && Grounded())
+        {
+            state = CurrentPlayerStates.Jumping;
+            pRb2d.AddForce(new Vector2(pRb2d.linearVelocity.x, jump));
+        }
+        
+        if (block.action.WasPressedThisFrame() && Grounded())
+        {
+            blocking = true;
+            state = CurrentPlayerStates.Blocking;
+            animator.SetBool("Blocking", true);
+        }
+        if (block.action.WasReleasedThisFrame())
+        {
+            blocking = false;
+            state = CurrentPlayerStates.Idle;
+            animator.SetBool("Blocking", false);
+        }
+    }
+    
+    private void Walking()
+    {
         direction = movement.action.ReadValue<Vector2>();
         Vector3 move = new Vector3(direction.x, 0, direction.y);
         
@@ -77,54 +123,21 @@ public class PlayerScript : MonoBehaviour
         {
             animator.SetBool("Walking", false);
         }
-
-        if (jumping.action.WasPressedThisFrame() && Grounded())
-        {
-            pRb2d.AddForce(new Vector2(pRb2d.linearVelocity.x, jump));
-        }
-
-
-        if (attack.action.WasPressedThisFrame() && Grounded())
-        {
-            if (combo.comboStep == 0 && !combo.OnComboCooldown)
-                combo.StartCombo();
-            else if (combo.canCombo && combo.comboStep > 0 && !combo.OnComboCooldown)
-                combo.ComboStep();
-            else
-                combo.InputBuffer = true;
-        }
-
-        if (block.action.WasPressedThisFrame() && Grounded())
-        {
-            blocking = true;
-            
-            animator.SetBool("Blocking", true);
-
-
-        }
-        
-        if (block.action.WasReleasedThisFrame())
-        {
-            blocking = false;
-                
-            animator.SetBool("Blocking", false);
-        }
     }
 
-    private void FixedUpdate()
+    private void StartAttack()
     {
-        pRb2d.AddForce(direction * speed);
-    }
-
-    public bool Grounded()
-    {
-        return Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer);
+        if (combo.comboStep == 0 && !combo.OnComboCooldown)
+            combo.StartCombo();
+        else if (combo.canCombo && combo.comboStep > 0 && !combo.OnComboCooldown)
+            combo.ComboStep();
+        else
+            combo.InputBuffer = true;
     }
     
-    // Will be actived by anim event (for now, the moment input is pressed)
+    // Will be actived by anim event
     public void Attack()
     {
-        
         Collider2D[] enemy = Physics2D.OverlapBoxAll(attackPoint.transform.position, atkBox, 0, enemies);
 
         foreach (Collider2D enemyGameObject in enemy)
@@ -150,13 +163,7 @@ public class PlayerScript : MonoBehaviour
                 enemyScript.PlayBlood(transform);
                 
                 StartCoroutine(enemyScript.Knockback(transform, 30f, knockbackCooldown));
-                
-                
             }
-            
-            
-            
-            Debug.Log("Enemy is hit!");
         }
     }
 
@@ -172,7 +179,6 @@ public class PlayerScript : MonoBehaviour
         {
             animator.Play("Block Reaction");
         }
-        
         
         if (Health <= 0)
         {
@@ -203,6 +209,16 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(duration);
         
         isKnockedBack = false;
+    }
+    
+    private void FixedUpdate()
+    {
+        pRb2d.AddForce(direction * speed);
+    }
+
+    public bool Grounded()
+    {
+        return Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer);
     }
     
     public float GetFacingDirection()
