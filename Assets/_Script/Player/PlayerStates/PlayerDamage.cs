@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStunned : PlayerBase
+public class PlayerDamage : PlayerBase
 {
     public override void EnterState(PlayerStateManager state)
     {
@@ -9,6 +9,6 @@ public class PlayerStunned : PlayerBase
     
     public override void UpdateState(PlayerStateManager state)
     {
-
+        
     }
 }

@@ -16,15 +16,26 @@ public class PlayerStateManager : MonoBehaviour
     private PlayerBase currentState;
 
     private Dictionary<PlayerStateType, PlayerBase> stateDictionary;
-    
-    [Header("Shared Player Components")]
+
+    [Header("Shared Player Components")] 
+    public GameObject player;
     public Rigidbody2D pRb2d;
     public Animator animator;
+    public float jumpForce;
+    public float walkSpeed;
+    
+    public Vector2 boxSize;
+    public float castDistance;
+    public LayerMask groundLayer;
     
     [Header("Keybinds")]
     public InputActionReference movement;
     public InputActionReference jumping;
     public InputActionReference attack;
+
+    public bool isMoving => movement.action.IsPressed();
+    public bool isJumping => jumping.action.IsPressed();
+    public bool isAttacking => attack.action.IsPressed();
 
     void Awake()
     {
@@ -34,8 +45,11 @@ public class PlayerStateManager : MonoBehaviour
             { PlayerStateType.Walk, new PlayerWalking() },
             { PlayerStateType.Jumping, new PlayerJumping() },
             { PlayerStateType.Attack, new PlayerAttacking() },
-            { PlayerStateType.Blocking, new PlayerBlocking() }
+            { PlayerStateType.Blocking, new PlayerBlocking() },
+            { PlayerStateType.Damaged , new PlayerDamage() }
         };
+        
+        SwitchState(PlayerStateType.Idle);
     }
     
     void Update()
@@ -55,4 +69,8 @@ public class PlayerStateManager : MonoBehaviour
         state.EnterState(this);
     }
 
+    private void OnDrawGizmos()     // For hitboxes
+    {
+        Gizmos.DrawWireCube(transform.position-transform.up * castDistance, boxSize);
+    }
 }
