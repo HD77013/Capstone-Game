@@ -26,6 +26,11 @@ public class PlayerWalking : PlayerBase
         
         state.pRb2d.AddForce(direction * state.walkSpeed);
         
+        if (state.isAttacking && Grounded(state))
+        {
+            state.SwitchState(PlayerStateType.Attack);
+        }
+        
         if (state.isJumping && Grounded(state))
         {
             state.SwitchState(PlayerStateType.Jumping);

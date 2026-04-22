@@ -5,14 +5,17 @@ using UnityEngine.InputSystem;
 
 public class ComboScript : MonoBehaviour
 {
-    [SerializeField]private PlayerScript player;
-    [SerializeField]private Animator animator;
+    [SerializeField] private PlayerStateManager plR;
+    [SerializeField] private PlayerScript player;
+    [SerializeField] private Animator animator;
     
     public bool InputBuffer;
     public int comboStep;
     public bool canCombo;
     public int maxCombo = 5;
 
+    public bool comboOpen;
+    
     public bool OnComboCooldown;
     private float comboResetTime = 1f;
     
@@ -23,7 +26,7 @@ public class ComboScript : MonoBehaviour
     private float lastAttackTime;
     private void Update()
     {
-
+        
     }
 
     private void RandomSoundPitching()
@@ -42,6 +45,8 @@ public class ComboScript : MonoBehaviour
             animator.Play("Attack 1");
 
             player.isAttacking = true;
+
+            plR.onCombo = true;
             
             player.pRb2d.linearVelocity = Vector2.zero;
             player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
@@ -59,6 +64,8 @@ public class ComboScript : MonoBehaviour
         canCombo = false;
         InputBuffer = false;
         animator.Play("Attack " + comboStep);
+        
+        plR.onCombo = true;
         
         player.isAttacking = true;
         
@@ -88,6 +95,9 @@ public class ComboScript : MonoBehaviour
     public void ComboEnd()
     { 
         comboStep = 0;
+        
+        plR.onCombo = false;
+        
         player.isAttacking = false;
         InputBuffer = false;
         animator.SetTrigger("End Combo");

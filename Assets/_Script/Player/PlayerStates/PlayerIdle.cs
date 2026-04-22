@@ -18,5 +18,10 @@ public class PlayerIdle : PlayerBase
         {
             state.SwitchState(PlayerStateType.Jumping);
         }
+
+        if (state.isAttacking && Grounded(state))
+        {
+            state.SwitchState(PlayerStateType.Attack);
+        }
     }
 }

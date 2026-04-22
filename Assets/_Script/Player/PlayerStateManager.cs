@@ -14,7 +14,9 @@ public enum PlayerStateType
 public class PlayerStateManager : MonoBehaviour
 {
     private PlayerBase currentState;
-
+    public ComboScript combo;
+    
+    
     private Dictionary<PlayerStateType, PlayerBase> stateDictionary;
 
     [Header("Shared Player Components")] 
@@ -33,6 +35,8 @@ public class PlayerStateManager : MonoBehaviour
     public InputActionReference jumping;
     public InputActionReference attack;
 
+    public bool onCombo;
+    
     public bool isMoving => movement.action.IsPressed();
     public bool isJumping => jumping.action.IsPressed();
     public bool isAttacking => attack.action.IsPressed();
