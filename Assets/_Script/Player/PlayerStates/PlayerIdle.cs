@@ -9,19 +9,17 @@ public class PlayerIdle : PlayerBase
     
     public override void UpdateState(PlayerStateManager state)
     {
-        if (state.isMoving)
-        {
+        if (state.input.isMoving)
             state.SwitchState(PlayerStateType.Walk);
-        }
 
-        if (state.isJumping && Grounded(state))
-        {
+        if (state.input.JumpPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Jumping);
-        }
-
-        if (state.isAttacking && Grounded(state))
-        {
+        
+        if (state.input.AttackPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Attack);
-        }
+        
+        if (state.input.isBlocking && Grounded(state))
+            state.SwitchState(PlayerStateType.Blocking);
+        
     }
 }

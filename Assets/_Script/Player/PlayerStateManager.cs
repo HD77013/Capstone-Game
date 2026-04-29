@@ -15,7 +15,7 @@ public class PlayerStateManager : MonoBehaviour
 {
     private PlayerBase currentState;
     public ComboScript combo;
-    
+    public PlayerInput input;
     
     private Dictionary<PlayerStateType, PlayerBase> stateDictionary;
 
@@ -35,12 +35,10 @@ public class PlayerStateManager : MonoBehaviour
     public InputActionReference jumping;
     public InputActionReference attack;
 
+    [Header("State checking")]
     public bool onCombo;
+    public bool IsBlocking { get; internal set; }
     
-    public bool isMoving => movement.action.IsPressed();
-    public bool isJumping => jumping.action.IsPressed();
-    public bool isAttacking => attack.action.IsPressed();
-
     void Awake()
     {
         stateDictionary = new Dictionary<PlayerStateType, PlayerBase>()

@@ -9,7 +9,7 @@ public class PlayerJumping : PlayerBase
     
     public override void UpdateState(PlayerStateManager state)
     {   
-        if (state.isMoving)
+        if (state.input.isMoving)
         {
             state.SwitchState(PlayerStateType.Walk);
         }

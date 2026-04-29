@@ -1503,13 +1503,12 @@ GameObject:
   - component: {fileID: 848018596}
   - component: {fileID: 848018599}
   - component: {fileID: 848018600}
-  - component: {fileID: 848018607}
-  - component: {fileID: 848018608}
+  - component: {fileID: 848018601}
   - component: {fileID: 848018602}
   - component: {fileID: 848018603}
   - component: {fileID: 848018606}
-  - component: {fileID: 848018601}
   - component: {fileID: 848018605}
+  - component: {fileID: 848018607}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1856,7 +1855,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStateManager
   combo: {fileID: 848018603}
-  input: {fileID: 848018608}
   player: {fileID: 848018595}
   pRb2d: {fileID: 848018597}
   animator: {fileID: 147778774}
@@ -1871,19 +1869,6 @@ MonoBehaviour:
   jumping: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   attack: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   onCombo: 0
---- !u!114 &848018608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848018595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81b54d1564592d147a7bdcf7a50bf2ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
-  attackAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!1 &1086369187
 GameObject:
   m_ObjectHideFlags: 0
