@@ -11,7 +11,7 @@ public class PlayerIdle : PlayerBase
     {
         if (state.input.isMoving)
             state.SwitchState(PlayerStateType.Walk);
-
+        
         if (state.input.JumpPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Jumping);
         

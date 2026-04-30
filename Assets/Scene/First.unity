@@ -1884,6 +1884,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
   attackAction: {fileID: 1120369429361536294, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  movement: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  jumping: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  blocking: {fileID: 933234794163984557, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!1 &1086369187
 GameObject:
   m_ObjectHideFlags: 0

@@ -66,6 +66,7 @@ public class PlayerStateManager : MonoBehaviour
 
     public void SwitchState(PlayerBase state)       // Actually switches to that state while exiting out of the other
     {
+        Debug.Log("State switched " + state);
         currentState?.ExitState(this);
         currentState = state;
         state.EnterState(this);

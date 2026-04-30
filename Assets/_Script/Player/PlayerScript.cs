@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
-    private enum CurrentPlayerStates { Idle, Walk, Jumping, Attack, Damaged, Blocking,}
-    [SerializeField] private CurrentPlayerStates state;
-    
     public Rigidbody2D pRb2d;
     public Vector2 direction;
     
@@ -21,11 +17,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private ComboScript combo;
     [SerializeField] private BloodScript blood;
     [SerializeField] private CameraScript camera;
-    
-    [Header("Keybinds")]
-    public InputActionReference movement;
-    public InputActionReference jumping;
-    public InputActionReference attack;
+    [SerializeField] private PlayerStateManager state;
     
     [Header("Attack Logic")]
     public GameObject attackPoint;
@@ -44,96 +36,11 @@ public class PlayerScript : MonoBehaviour
     public AudioClip attackSound;
     public AudioClip[] hitSound;
     public AudioClip[] blockedSound;
-
-    [Header("Blocking")] 
-    public InputActionReference block;
-    private bool blocking;
     
     [Header("Basic attributes")]
     public float Health;
     public float maxHealth;
     public float baseDamage;
-    public float speed;
-    public float jump;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        flash = GetComponent<FlashScript>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        switch (state)
-        {
-            case CurrentPlayerStates.Idle:
-                break;
-            case CurrentPlayerStates.Walk:
-                Walking();
-                break;
-            case CurrentPlayerStates.Jumping:
-                break;
-            case CurrentPlayerStates.Attack:
-                StartAttack();
-                break;
-            case CurrentPlayerStates.Damaged:
-                break;
-            case CurrentPlayerStates.Blocking:
-                break;
-        }
-
-        if (movement.action.WasPressedThisFrame())
-            state = CurrentPlayerStates.Walk;
-        
-        if (attack.action.WasPressedThisFrame() && Grounded())
-            state = CurrentPlayerStates.Attack;
-
-        if (jumping.action.WasPressedThisFrame() && Grounded())
-        {
-            state = CurrentPlayerStates.Jumping;
-            pRb2d.AddForce(new Vector2(pRb2d.linearVelocity.x, jump));
-        }
-        
-        if (block.action.WasPressedThisFrame() && Grounded())
-        {
-            blocking = true;
-            state = CurrentPlayerStates.Blocking;
-            animator.SetBool("Blocking", true);
-        }
-        if (block.action.WasReleasedThisFrame())
-        {
-            blocking = false;
-            state = CurrentPlayerStates.Idle;
-            animator.SetBool("Blocking", false);
-        }
-    }
-    
-    private void Walking()
-    {
-        direction = movement.action.ReadValue<Vector2>();
-        Vector3 move = new Vector3(direction.x, 0, direction.y);
-        
-        if (move != Vector3.zero)
-        {
-            transform.localScale = new Vector3(move.x, 1f, 1f);
-            animator.SetBool("Walking", true);
-        }
-        else
-        {
-            animator.SetBool("Walking", false);
-        }
-    }
-
-    private void StartAttack()
-    {
-        if (combo.comboStep == 0 && !combo.OnComboCooldown)
-            combo.StartCombo();
-        else if (combo.canCombo && combo.comboStep > 0 && !combo.OnComboCooldown)
-            combo.ComboStep();
-        else
-            combo.InputBuffer = true;
-    }
     
     // Will be actived by anim event
     public void Attack()
@@ -169,7 +76,7 @@ public class PlayerScript : MonoBehaviour
 
     public void Damage(float damage)
     {
-        if (!blocking)
+        if (state.IsBlocking)
         {
             Health -= damage;
         
@@ -188,7 +95,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
     
-    public void PlayBlood(Transform source)
+    public void PlayBlood(Transform source) // Debate whether this should be moved to Player State
     {
         Vector2 attackerPos = ((Vector2)transform.position - (Vector2)source.position).normalized;
         Vector2 posDir = new Vector2(attackerPos.x, 0f).normalized;
@@ -196,7 +103,7 @@ public class PlayerScript : MonoBehaviour
         blood.SpawnBlood(transform, posDir);
     }
     
-    public IEnumerator Knockback(Transform source , float knockbackForce, float duration)
+    public IEnumerator Knockback(Transform source , float knockbackForce, float duration)   // Debate whether this should be moved to Player State
     {
         isKnockedBack = true;
         
@@ -209,16 +116,6 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(duration);
         
         isKnockedBack = false;
-    }
-    
-    private void FixedUpdate()
-    {
-        pRb2d.AddForce(direction * speed);
-    }
-
-    public bool Grounded()
-    {
-        return Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer);
     }
     
     public float GetFacingDirection()

@@ -9,6 +9,8 @@ public class PlayerBlocking : PlayerBase
     
     public override void UpdateState(PlayerStateManager state)
     {
+        if (!state.input.isBlocking)
+            state.SwitchState(PlayerStateType.Idle);
         
     }
 

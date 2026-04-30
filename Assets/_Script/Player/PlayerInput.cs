@@ -9,7 +9,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private InputActionReference blocking;
     
     public bool isMoving => movement.action.IsPressed();
-    public bool isBlocking => movement.action.IsPressed();
+    public bool isBlocking => blocking.action.IsPressed();
     
     public bool AttackPressed { get; private set; }
     public bool JumpPressed { get; private set; }
