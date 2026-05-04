@@ -16,6 +16,7 @@ public class PlayerStateManager : MonoBehaviour
     private PlayerBase currentState;
     public ComboScript combo;
     public PlayerInput input;
+    public FlashScript flash;
     
     private Dictionary<PlayerStateType, PlayerBase> stateDictionary;
 
@@ -38,6 +39,11 @@ public class PlayerStateManager : MonoBehaviour
     [Header("State checking")]
     public bool onCombo;
     public bool IsBlocking { get; internal set; }
+    
+    [Header("Knockback Data")]
+    public Transform knockbackSource;
+    public float knockbackForce;
+    public float knockbackDuration;
     
     void Awake()
     {
@@ -70,6 +76,14 @@ public class PlayerStateManager : MonoBehaviour
         currentState?.ExitState(this);
         currentState = state;
         state.EnterState(this);
+    }
+    
+    public void TriggerKnockback(Transform source, float force, float duration)
+    {
+        knockbackSource = source;
+        knockbackForce  = force;
+        knockbackDuration = duration;
+        SwitchState(PlayerStateType.Damaged);
     }
 
     private void OnDrawGizmos()     // For hitboxes

@@ -7,7 +7,8 @@ public class EnemyScript : MonoBehaviour
     public Rigidbody2D enemyRB;
 
     public GameObject player;
-    private PlayerScript _playerScript;
+    [SerializeField]private PlayerScript _playerScript;
+    [SerializeField]private PlayerStateManager _player;
     private ComboScript _combo;
 
     public Vector2 direction;
@@ -191,9 +192,13 @@ public class EnemyScript : MonoBehaviour
             Health -= damage;
         
             flash.Flash();
+            
+            animator.Play("Damage");
         }
         else
         {
+
+            
             Health -= damage / 2;
 
             isBlocking = false;
@@ -308,11 +313,10 @@ public class EnemyScript : MonoBehaviour
         {
             soundManager.PlayOneShot(hitSound);
             
-            PlayerScript script = player.GetComponent<PlayerScript>();
-            script.Damage(Damage);
-            script.PlayBlood(transform);
-            
-            StartCoroutine(script.Knockback(transform, 30f, 0.4f));
+            _playerScript.PlayBlood(transform);
+
+            // Hand off all three parameters through the state manager
+            _player.TriggerKnockback(transform, 30f, 0.4f);
             
             Debug.Log("Player is damaged");
         }
