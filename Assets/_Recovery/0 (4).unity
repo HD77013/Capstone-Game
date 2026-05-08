@@ -1642,94 +1642,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!1 &771045466
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 771045467}
-  - component: {fileID: 771045470}
-  - component: {fileID: 771045469}
-  - component: {fileID: 771045468}
-  m_Layer: 5
-  m_Name: Damage Screen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &771045467
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771045466}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1428185231}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &771045468
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771045466}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
---- !u!114 &771045469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771045466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 15
---- !u!222 &771045470
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771045466}
-  m_CullTransparentMesh: 1
 --- !u!1 &848018595
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,17 +1652,16 @@ GameObject:
   m_Component:
   - component: {fileID: 848018598}
   - component: {fileID: 848018597}
-  - component: {fileID: 848018599}
-  - component: {fileID: 848018607}
   - component: {fileID: 848018596}
-  - component: {fileID: 848018608}
-  - component: {fileID: 848018603}
-  - component: {fileID: 848018609}
-  - component: {fileID: 848018602}
-  - component: {fileID: 848018601}
-  - component: {fileID: 848018606}
-  - component: {fileID: 848018605}
+  - component: {fileID: 848018599}
   - component: {fileID: 848018600}
+  - component: {fileID: 848018607}
+  - component: {fileID: 848018608}
+  - component: {fileID: 848018602}
+  - component: {fileID: 848018603}
+  - component: {fileID: 848018606}
+  - component: {fileID: 848018601}
+  - component: {fileID: 848018605}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1771,13 +1682,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerScript
   pRb2d: {fileID: 848018597}
+  direction: {x: 0, y: 0}
   boxSize: {x: 1.95, y: 4.5}
   castDistance: -0.04
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  animator: {fileID: 147778774}
   flash: {fileID: 848018601}
   combo: {fileID: 848018603}
   blood: {fileID: 848018602}
   camera: {fileID: 519420033}
-  state: {fileID: 848018607}
+  state: {fileID: 0}
   attackPoint: {fileID: 299478866}
   atkBox: {x: 2.69, y: -2.41}
   atkCastDis: 0
@@ -1785,6 +1701,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isAttacking: 0
+  isKnockedBack: 0
   forwardForce: 20
   knockbackCooldown: 2
   soundManager: {fileID: 848018600}
@@ -1799,7 +1716,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e5ecc98ff40556543b77c8c2aa090822, type: 3}
   - {fileID: 8300000, guid: e5ecc98ff40556543b77c8c2aa090822, type: 3}
   - {fileID: 8300000, guid: 72a9b2a2a3eaa584d9ba3a8e2166f0fd, type: 3}
-  health: 5
+  Health: 10
   maxHealth: 10
   baseDamage: 1
 --- !u!50 &848018597
@@ -2084,8 +2001,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9145783e8b36f8248977af5a0bc850a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStateManager
-  data: {fileID: 848018596}
-  death: {fileID: 848018609}
   combo: {fileID: 848018603}
   input: {fileID: 848018608}
   flash: {fileID: 848018601}
@@ -2093,7 +2008,7 @@ MonoBehaviour:
   pRb2d: {fileID: 848018597}
   animator: {fileID: 147778774}
   jumpForce: 1000
-  walkSpeed: 100
+  walkSpeed: 50
   audio: {fileID: 848018600}
   boxSize: {x: 1.95, y: 4.5}
   castDistance: -0.04
@@ -2110,9 +2025,8 @@ MonoBehaviour:
   blockedSounds:
   - {fileID: 8300000, guid: 74198389e177d0948b63ca9a3fb22801, type: 3}
   - {fileID: 8300000, guid: e5ecc98ff40556543b77c8c2aa090822, type: 3}
-  - {fileID: 8300000, guid: 72a9b2a2a3eaa584d9ba3a8e2166f0fd, type: 3}
-  - {fileID: 8300000, guid: a37109c51cd477548ad1c882be3971d5, type: 3}
-  isDead: 0
+  - {fileID: 8300000, guid: 1e3312d22540aa14597a1fb4739f2782, type: 3}
+  - {fileID: 8300000, guid: d0f166575306db84091dc03fce0eff69, type: 3}
 --- !u!114 &848018608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2129,19 +2043,6 @@ MonoBehaviour:
   movement: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   jumping: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   blocking: {fileID: 933234794163984557, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  isEnabled: 1
---- !u!114 &848018609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848018595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa7352d93dfd2344f871777e0b778bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerDeath
 --- !u!1 &1086369187
 GameObject:
   m_ObjectHideFlags: 0
@@ -3304,7 +3205,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1307715550}
-  - {fileID: 771045467}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

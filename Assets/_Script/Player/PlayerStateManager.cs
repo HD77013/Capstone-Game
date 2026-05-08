@@ -14,6 +14,8 @@ public enum PlayerStateType
 public class PlayerStateManager : MonoBehaviour
 {
     private PlayerBase currentState;
+    public PlayerScript data;
+    public PlayerDeath death;
     public ComboScript combo;
     public PlayerInput input;
     public FlashScript flash;
@@ -26,6 +28,7 @@ public class PlayerStateManager : MonoBehaviour
     public Animator animator;
     public float jumpForce;
     public float walkSpeed;
+    public AudioSource audio;
     
     public Vector2 boxSize;
     public float castDistance;
@@ -44,6 +47,11 @@ public class PlayerStateManager : MonoBehaviour
     public Transform knockbackSource;
     public float knockbackForce;
     public float knockbackDuration;
+
+    [Header("Block")] public AudioClip[] blockedSounds;
+
+    [Header("Death")] public bool isDead;
+    
     
     void Awake()
     {
@@ -78,12 +86,34 @@ public class PlayerStateManager : MonoBehaviour
         state.EnterState(this);
     }
     
-    public void TriggerKnockback(Transform source, float force, float duration)
+    // To check if player's hp will drop to 0. If so, they transition to death state. But not, they will only transition to hurt state
+    public void OnDamageTaken(Transform source, float force, float duration)
     {
-        knockbackSource = source;
-        knockbackForce  = force;
-        knockbackDuration = duration;
-        SwitchState(PlayerStateType.Damaged);
+        if (data.health <= 0)
+        {
+            currentState?.ExitState(this);
+            isDead = true;
+            input.isEnabled = false;
+            death.OnDeath();
+        }
+        else
+        {
+            knockbackSource = source;
+            knockbackForce  = force;
+            knockbackDuration = duration;
+        
+            if (!IsBlocking)
+                SwitchState(PlayerStateType.Damaged);
+            else
+            {
+                animator.Play("Block Reaction");
+                int random = Random.Range(0, 5);
+                AudioClip blocked = blockedSounds[random - 1];
+            
+                audio.PlayOneShot(blocked);
+            }
+        }
+        
     }
 
     private void OnDrawGizmos()     // For hitboxes

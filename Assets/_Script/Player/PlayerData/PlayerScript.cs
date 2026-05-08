@@ -4,13 +4,9 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     public Rigidbody2D pRb2d;
-    public Vector2 direction;
     
     public Vector2 boxSize;
     public float castDistance;
-    public LayerMask groundLayer;
-    
-    public Animator animator;
     
     [Header("ReferencedScripts")]
     [SerializeField] private FlashScript flash;
@@ -26,8 +22,7 @@ public class PlayerScript : MonoBehaviour
     public LayerMask enemies;
     public bool isAttacking;
     
-    [Header("Knockback/Damage Logic")]
-    public bool isKnockedBack;
+    [Header("Knockback/Damage Logic (towards enemy)")]
     public float forwardForce;
     public float knockbackCooldown;
     
@@ -38,9 +33,17 @@ public class PlayerScript : MonoBehaviour
     public AudioClip[] blockedSound;
     
     [Header("Basic attributes")]
-    public float Health;
+    public float health;
     public float maxHealth;
     public float baseDamage;
+
+    // Called by hurt state
+    public void TakeDamage(float amount, Transform source, float force, float duration)
+    {
+        health -= amount;
+        
+        state.OnDamageTaken(source, force, duration);
+    }
     
     // Will be actived by anim event
     public void Attack()
@@ -73,27 +76,6 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-
-    public void Damage(float damage)
-    {
-        if (state.IsBlocking)
-        {
-            Health -= damage;
-        
-            flash.Flash();
-        }
-        else
-        {
-            animator.Play("Block Reaction");
-        }
-        
-        if (Health <= 0)
-        {
-            Debug.Log("Player is dead");
-            
-            Health = maxHealth;
-        }
-    }
     
     public void PlayBlood(Transform source) // Debate whether this should be moved to Player State
     {
@@ -101,21 +83,6 @@ public class PlayerScript : MonoBehaviour
         Vector2 posDir = new Vector2(attackerPos.x, 0f).normalized;
         
         blood.SpawnBlood(transform, posDir);
-    }
-    
-    public IEnumerator Knockback(Transform source , float knockbackForce, float duration)   // Debate whether this should be moved to Player State
-    {
-        isKnockedBack = true;
-        
-        Vector2 directionToTarget = ((Vector2)transform.position - (Vector2)source.position).normalized;
-        Vector2 knockbackDir = new Vector2(directionToTarget.x, 0f).normalized;
-        
-        pRb2d.linearVelocity = Vector2.zero; // Cancel existing movement
-        pRb2d.linearVelocity = new Vector2(knockbackDir.x * knockbackForce, 0f);
-        
-        yield return new WaitForSeconds(duration);
-        
-        isKnockedBack = false;
     }
     
     public float GetFacingDirection()

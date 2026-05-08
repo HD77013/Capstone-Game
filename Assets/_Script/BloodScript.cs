@@ -8,8 +8,9 @@ public class BloodScript : MonoBehaviour
     
     public void SpawnBlood(Transform source, Vector2 direction)
     {
-        Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.left, direction); 
-        
-        particleInstance = Instantiate(blood, source.position, spawnRotation);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90f;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+    
+        Instantiate(blood, source.position, rotation);
     }
 }

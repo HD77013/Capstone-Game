@@ -5,6 +5,8 @@ public class PlayerBlocking : PlayerBase
     public override void EnterState(PlayerStateManager state)
     {
         state.IsBlocking = true;
+        
+        state.animator.SetBool("Blocking", true);
     }
     
     public override void UpdateState(PlayerStateManager state)
@@ -16,6 +18,8 @@ public class PlayerBlocking : PlayerBase
 
     public override void ExitState(PlayerStateManager state)
     {
+        state.animator.SetBool("Blocking", false);
+        
         state.IsBlocking = false;
     }
 }
