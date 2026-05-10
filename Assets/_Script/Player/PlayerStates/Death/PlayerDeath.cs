@@ -4,11 +4,42 @@ using UnityEngine;
 
 public class PlayerDeath : MonoBehaviour
 {
-
-    public void OnDeath()
+    public Animator animator;
+    public Rigidbody2D pRb2d;
+    
+    public CanvasGroup deathScreen;
+    public AudioSource source;
+    public AudioClip deathSound;
+    
+    public void OnDeath(Transform knockbackSource , float knockbackForce, float duration)
     {
         Debug.Log("Player is dead");
+        
+        Vector2 dir = ((Vector2)transform.position
+                       - (Vector2)knockbackSource.position).normalized;
+
+        pRb2d.linearVelocity = Vector2.zero;
+        pRb2d.linearVelocity = new Vector2(dir.x * knockbackForce, 0f);
+        
+        animator.Play("Death");
+        source.PlayOneShot(deathSound); 
+        
+        Invoke("DeathScreen", 1.0f);
     }
+
+    void DeathScreen()
+    {
+        deathScreen.alpha = 1f;
+        
+        Invoke("Respawn", 5.0f);
+    }
+
+    void Respawn()
+    {
+        animator.SetTrigger("Respawn");
+        
+        deathScreen.alpha = 0f;
+    } 
 
     // Update is called once per frame
     void Update()

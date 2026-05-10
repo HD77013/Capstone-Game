@@ -94,7 +94,7 @@ public class PlayerStateManager : MonoBehaviour
             currentState?.ExitState(this);
             isDead = true;
             input.isEnabled = false;
-            death.OnDeath();
+            death.OnDeath(source, force, duration);
         }
         else
         {
