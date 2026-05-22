@@ -116,6 +116,14 @@ public class PlayerStateManager : MonoBehaviour
         
     }
 
+    public void OnRespawn()
+    {
+        SwitchState(PlayerStateType.Idle);
+
+        isDead = false;
+        input.isEnabled = true;
+    }
+
     private void OnDrawGizmos()     // For hitboxes
     {
         Gizmos.DrawWireCube(transform.position-transform.up * castDistance, boxSize);

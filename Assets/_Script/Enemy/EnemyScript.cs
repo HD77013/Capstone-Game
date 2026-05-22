@@ -21,7 +21,7 @@ public class EnemyScript : MonoBehaviour
     [Header("Attack Logic")]
     public GameObject attackPoint;
     public Vector2 boxSize;
-    private bool isAttacking;
+    [SerializeField]private bool isAttacking;
     public float castDistance;
     public Vector2 atkBox;
     public bool canAttack;
@@ -55,6 +55,7 @@ public class EnemyScript : MonoBehaviour
     [Header("Attack Cooldown")]
     public float attackCooldownDuration = 2.0f; // Time between attacks
     private float lastAttackTime;
+    private float pendingAttackDelay = -1f; // -1 means no attack is pending
     
     [Header("Basic Attributes")] 
     public float Health;
@@ -72,22 +73,37 @@ public class EnemyScript : MonoBehaviour
     public Animator animator;
     private int attackAnim;
     
-
+    [Header("Separation")]
+    public LayerMask enemyLayer;
+    public float separationRadius = 1.2f;
+    public float separationForce = 3f;
+    
+    [Header("Chase")]
+    [SerializeField]private float chaseTargetOffset; // Set once in Start()
+    [SerializeField]private float distanceTargetOffset;
+    [SerializeField] private float AwayDir;
+    
     [SerializeField] private Vector2 follow;
 
     [SerializeField] private bool isKnockedBack;
 
+    public bool isDead;
+    
     public Vector2 wanderPoints;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         flash = GetComponent<FlashScript>();
-
         _playerScript = player.GetComponent<PlayerScript>();
-
         _combo = player.GetComponent<ComboScript>();
         
         randomTime = Random.Range(minWalkTime, maxWalkTime);
+        
+        timer = Random.Range(0f, randomTime);
+        wandering = Random.value > 0.5f;
+        attackCooldownDuration += Random.Range(-0.4f, 0.4f);
+        chaseTargetOffset = Random.Range(-1.5f, 1.5f);
+        distanceTargetOffset = Random.Range(2.5f, 5.0f);
         
         direction = Vector2.right * facingDirection;
         
@@ -99,7 +115,10 @@ public class EnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
+        if (isDead) return;
+        
+        if (_player.isDead) return;
+
         if (timer >= randomTime) StateChange();
         
         if (isKnockedBack) return;
@@ -112,6 +131,8 @@ public class EnemyScript : MonoBehaviour
 
     private void FixedUpdate()
     { 
+        if (isDead) return;
+        
         if (_combo.comboStep == 0)
         {
             // Resets block behabiour if player's combo resets
@@ -125,7 +146,7 @@ public class EnemyScript : MonoBehaviour
             
             blockChance = Random.Range(0, 101);
 
-            if (blockChance <= 90)
+            if (blockChance <= 20)
             {
                 isBlocking = true;
                 
@@ -150,26 +171,44 @@ public class EnemyScript : MonoBehaviour
         
         if (canChase)
         {
-            // Chase player
-            follow = (player.transform.position - transform.position); // Player position
+            float targetX = (player.transform.position.x + chaseTargetOffset) - transform.position.x;
+            follow = new Vector2(targetX, player.transform.position.y - transform.position.y);
+
             wandering = false;
             centered = false;
 
-            if (Mathf.Abs(follow.x) > 1.0f && !isAttacking && !canAttack) // Too close - move away
+            Vector2 sep = GetSeparationVelocity();
+            float dir = Mathf.Sign(follow.x);
+
+            // Use raw player distance for back-away, not the offset-adjusted follow
+            AwayDir = Mathf.Abs(player.transform.position.x - transform.position.x);
+            float awayDir = -Mathf.Sign(player.transform.position.x - transform.position.x);
+
+            if (AwayDir < distanceTargetOffset && !isAttacking && !canAttack)
             {
-                enemyRB.linearVelocity = new Vector2(chaseSpeed * -follow.x, enemyRB.linearVelocity.y);
-            }
-            else // Normal chase - move toward
-            {
-                enemyRB.linearVelocity = new Vector2(chaseSpeed * follow.x, enemyRB.linearVelocity.y);
-            }
-                
-            if (Mathf.Abs(follow.x) > 0.01f)
-            {
-                facingDirection = follow.x < 0 ? -1f : 1f;
+                // Too close to the actual player — back away from them directly
+                enemyRB.linearVelocity = new Vector2(chaseSpeed * awayDir + sep.x, enemyRB.linearVelocity.y);
                 animator.SetBool("Walking", true);
             }
+            else if (AwayDir >= distanceTargetOffset)
+            {
+                enemyRB.linearVelocity = new Vector2(sep.x, enemyRB.linearVelocity.y);
+                animator.SetBool("Walking", false);
+            }
+            
+            if (isAttacking || canAttack)
+            {
+                // Move toward offset target position normally
+                enemyRB.linearVelocity = new Vector2(chaseSpeed * dir + sep.x, enemyRB.linearVelocity.y);
+                animator.SetBool("Walking", true);
+            }
+
+            if (Mathf.Abs(follow.x) > 0.001f)
+            {
+                facingDirection = follow.x < 0 ? -1f : 1f;
+            }
         }
+        
         else if (wandering) // Only move during walk state, not pause state
         {
             enemyRB.linearVelocity = new Vector2(speed * facingDirection, enemyRB.linearVelocity.y);
@@ -180,7 +219,7 @@ public class EnemyScript : MonoBehaviour
             enemyRB.linearVelocity = new Vector2(0, enemyRB.linearVelocity.y);
             animator.SetBool("Walking", false);
         }
-
+        
     }
 
     public void Damaged(float damage)
@@ -209,7 +248,15 @@ public class EnemyScript : MonoBehaviour
         
         if (Health <= 0)
         {
-            Destroy(gameObject);
+            isDead = true;
+            animator.SetBool("Dead", true);
+
+            float knockBackForce = Random.Range(999,999);
+
+            PlayBlood(player.transform);
+            StartCoroutine(Knockback(player.transform, knockBackForce, 2f));
+
+            Destroy(gameObject, 5f);
         }
         
     }
@@ -288,22 +335,39 @@ public class EnemyScript : MonoBehaviour
     private void Attack()
     {
         if (Time.time - lastAttackTime >= attackCooldownDuration)
-        {
             canAttack = true;
-        }
-        
+
+
         if (canAttack && CheckAttack())
         {
-            soundManager.PlayOneShot(attackSound);
-            
-            attackAnim = Random.Range(1, 3);
-            animator.Play("Attack " + attackAnim);
-            
-            lastAttackTime = Time.time;
-            canAttack = false;
-            isAttacking = true;
+            if (pendingAttackDelay < 0f)
+            {
+                // Queue the attack with a random delay instead of firing instantly
+                pendingAttackDelay = Random.Range(0f, 0.6f);
+            }
         }
 
+        if (pendingAttackDelay >= 0)
+        {
+            pendingAttackDelay -= Time.deltaTime;
+
+            if (pendingAttackDelay <= 0)
+            {
+                pendingAttackDelay = -1f;
+
+                if (CheckAttack())
+                {
+                    soundManager.PlayOneShot(attackSound);
+            
+                    attackAnim = Random.Range(1, 3);
+                    animator.Play("Attack " + attackAnim);
+            
+                    lastAttackTime = Time.time;
+                    canAttack = false;
+                    isAttacking = true;
+                }
+            }
+        }
     }
 
     // Activated via animation event
@@ -327,6 +391,24 @@ public class EnemyScript : MonoBehaviour
     public void EndAttack()
     {
         isAttacking = false;
+    }
+    
+    Vector2 GetSeparationVelocity()
+    {
+        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, separationRadius, enemyLayer);
+        Vector2 separation = Vector2.zero;
+
+        foreach (var col in nearby)
+        {
+            if (col.gameObject == gameObject) continue;
+
+            Vector2 away = (Vector2)transform.position - (Vector2)col.transform.position;
+            // Weight by proximity — closer enemies push harder
+            float weight = 1f - (away.magnitude / separationRadius);
+            separation += away.normalized * weight;
+        }
+
+        return separation * separationForce;
     }
     
     void ApplyFacing()

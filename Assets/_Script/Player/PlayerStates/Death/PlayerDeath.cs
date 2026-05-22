@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class PlayerDeath : MonoBehaviour
 {
+    public PlayerStateManager player;
+    
     public Animator animator;
     public Rigidbody2D pRb2d;
     
     public CanvasGroup deathScreen;
     public AudioSource source;
+    
+    public AudioClip screenSound;
     public AudioClip deathSound;
     
     public void OnDeath(Transform knockbackSource , float knockbackForce, float duration)
@@ -22,8 +26,15 @@ public class PlayerDeath : MonoBehaviour
         pRb2d.linearVelocity = new Vector2(dir.x * knockbackForce, 0f);
         
         animator.Play("Death");
-        source.PlayOneShot(deathSound); 
+        source.PlayOneShot(deathSound);
         
+        Invoke("PrepareDeathScreen", 5.0f);
+    }
+
+    void PrepareDeathScreen()
+    {
+        source.PlayOneShot(screenSound);
+
         Invoke("DeathScreen", 1.0f);
     }
 
@@ -36,6 +47,8 @@ public class PlayerDeath : MonoBehaviour
 
     void Respawn()
     {
+        player.OnRespawn();
+        
         animator.SetTrigger("Respawn");
         
         deathScreen.alpha = 0f;

@@ -3,12 +3,20 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour
 {
     public Transform Camera;
+    public Camera cam;
     public Transform player;
 
     public float shake;
     public float shakeAmount = 0.7f;
     public float decreaseFactor = 0.5f;
+
+    public PlayerStateManager plrScript;
+
+    public float zoomRate = 1.0f;
     
+    public bool notReachedVal = true;
+    public float zoomVal = 3.0f;
+    public float intialSize = 5.0f;
     
     [SerializeField]private float lerpSpeed = 1.0f;
     
@@ -37,6 +45,32 @@ public class CameraScript : MonoBehaviour
             shake = 0f;
             transform.position = follow;
         }
+
+        if (plrScript.isDead)
+        {
+            // Zoom in when dead
+            if (notReachedVal)
+            {
+                cam.orthographicSize = Mathf.MoveTowards(
+                    cam.orthographicSize, 
+                    zoomVal, 
+                    zoomRate * Time.deltaTime
+                );
         
+                if (cam.orthographicSize <= zoomVal)
+                {
+                    notReachedVal = false;
+                }
+            }
+        }
+        else
+        {
+            // Reset when alive
+            if (!notReachedVal || cam.orthographicSize != intialSize)
+            {
+                cam.orthographicSize = intialSize;
+                notReachedVal = true;
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@ public class PlayerScript : MonoBehaviour
         {
             EnemyScript enemyScript = enemyGameObject.GetComponent<EnemyScript>();
             
-            if (enemyScript != null)
+            if (enemyScript != null && !enemyScript.isDead)
             {
                 if (enemyScript.isBlocking)
                 {
@@ -71,8 +71,12 @@ public class PlayerScript : MonoBehaviour
                 
                 enemyScript.Damaged(baseDamage);
                 enemyScript.PlayBlood(transform);
-                
-                StartCoroutine(enemyScript.Knockback(transform, 30f, knockbackCooldown));
+
+                if (!enemyScript.isDead)
+                {
+                    StartCoroutine(enemyScript.Knockback(transform, 30f, knockbackCooldown));
+                }
+
             }
         }
     }
