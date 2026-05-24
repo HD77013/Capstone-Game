@@ -90,12 +90,19 @@ public class EnemyScript : MonoBehaviour
     public bool isDead;
     
     public Vector2 wanderPoints;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        flash = GetComponent<FlashScript>();
-        _playerScript = player.GetComponent<PlayerScript>();
-        _combo = player.GetComponent<ComboScript>();
+        player = GameObject.FindGameObjectWithTag("Player");
+        
+        if (player != null)
+        {
+            _player = player.GetComponent<PlayerStateManager>();
+            _playerScript = player.GetComponent<PlayerScript>();
+            flash = GetComponent<FlashScript>();
+            _combo = player.GetComponent<ComboScript>();
+        }
         
         randomTime = Random.Range(minWalkTime, maxWalkTime);
         
@@ -187,7 +194,7 @@ public class EnemyScript : MonoBehaviour
             if (AwayDir < distanceTargetOffset && !isAttacking && !canAttack)
             {
                 // Too close to the actual player — back away from them directly
-                enemyRB.linearVelocity = new Vector2(chaseSpeed * awayDir + sep.x, enemyRB.linearVelocity.y);
+                enemyRB.linearVelocity = new Vector2(chaseSpeed / 2 * awayDir + sep.x, enemyRB.linearVelocity.y);
                 animator.SetBool("Walking", true);
             }
             else if (AwayDir >= distanceTargetOffset)
@@ -203,7 +210,7 @@ public class EnemyScript : MonoBehaviour
                 animator.SetBool("Walking", true);
             }
 
-            if (Mathf.Abs(follow.x) > 0.001f)
+            if (Mathf.Abs(follow.x) > 0.001f && !(isAttacking || canAttack))
             {
                 facingDirection = follow.x < 0 ? -1f : 1f;
             }
@@ -236,10 +243,6 @@ public class EnemyScript : MonoBehaviour
         }
         else
         {
-
-            
-            Health -= damage / 2;
-
             isBlocking = false;
             
             animator.Play("Block");
@@ -251,7 +254,7 @@ public class EnemyScript : MonoBehaviour
             isDead = true;
             animator.SetBool("Dead", true);
 
-            float knockBackForce = Random.Range(999,999);
+            float knockBackForce = Random.Range(50, 90);
 
             PlayBlood(player.transform);
             StartCoroutine(Knockback(player.transform, knockBackForce, 2f));

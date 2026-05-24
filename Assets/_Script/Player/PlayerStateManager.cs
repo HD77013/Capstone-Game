@@ -80,7 +80,7 @@ public class PlayerStateManager : MonoBehaviour
 
     public void SwitchState(PlayerBase state)       // Actually switches to that state while exiting out of the other
     {
-        Debug.Log("State switched " + state);
+   //     Debug.Log("State switched " + state);
         currentState?.ExitState(this);
         currentState = state;
         state.EnterState(this);
@@ -108,7 +108,7 @@ public class PlayerStateManager : MonoBehaviour
             {
                 animator.Play("Block Reaction");
                 int random = Random.Range(0, 5);
-                AudioClip blocked = blockedSounds[random - 1];
+                AudioClip blocked = blockedSounds[random];
             
                 audio.PlayOneShot(blocked);
             }
@@ -118,9 +118,22 @@ public class PlayerStateManager : MonoBehaviour
 
     public void OnRespawn()
     {
-        SwitchState(PlayerStateType.Idle);
+
 
         isDead = false;
+        input.isEnabled = true;
+    }
+
+    public void StopPlayer()
+    {
+        currentState?.ExitState(this);
+        SwitchState(PlayerStateType.Idle);
+        input.isEnabled = false;
+    }
+
+    public void Allow()
+    {
+        SwitchState(PlayerStateType.Idle);
         input.isEnabled = true;
     }
 

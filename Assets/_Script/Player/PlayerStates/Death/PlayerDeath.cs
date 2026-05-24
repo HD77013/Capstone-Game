@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerDeath : MonoBehaviour
 {
     public PlayerStateManager player;
+    public CameraScript camera;
     
     public Animator animator;
     public Rigidbody2D pRb2d;
@@ -24,6 +25,9 @@ public class PlayerDeath : MonoBehaviour
 
         pRb2d.linearVelocity = Vector2.zero;
         pRb2d.linearVelocity = new Vector2(dir.x * knockbackForce, 0f);
+
+        camera.zoomVal = 3.0f;
+        camera.zoomIn = true;
         
         animator.Play("Death");
         source.PlayOneShot(deathSound);
@@ -48,7 +52,8 @@ public class PlayerDeath : MonoBehaviour
     void Respawn()
     {
         player.OnRespawn();
-        
+
+        camera.zoomIn = false;
         animator.SetTrigger("Respawn");
         
         deathScreen.alpha = 0f;

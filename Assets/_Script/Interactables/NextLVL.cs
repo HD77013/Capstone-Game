@@ -8,6 +8,8 @@ public class NextLVL : MonoBehaviour
     [SerializeField]private bool canMoveOn;
     private PlayerScript player;
 
+    public Vector3 nextTransformPos;
+
     [SerializeField]private InputActionReference next;
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -27,18 +29,14 @@ public class NextLVL : MonoBehaviour
             canMoveOn = false;
         }
     }
-
-
-    void Start()
-    {
-
-    }
     
     void Update()
     {
         if (canMoveOn && next.action.WasPressedThisFrame())
         {
             SceneManager.LoadScene("Next");
+
+            player.transform.position = nextTransformPos;
         }
     }
 }

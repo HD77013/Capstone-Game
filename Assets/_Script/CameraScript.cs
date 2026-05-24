@@ -12,6 +12,8 @@ public class CameraScript : MonoBehaviour
 
     public PlayerStateManager plrScript;
 
+    public bool zoomIn;    
+    
     public float zoomRate = 1.0f;
     
     public bool notReachedVal = true;
@@ -46,9 +48,8 @@ public class CameraScript : MonoBehaviour
             transform.position = follow;
         }
 
-        if (plrScript.isDead)
+        if (zoomIn)
         {
-            // Zoom in when dead
             if (notReachedVal)
             {
                 cam.orthographicSize = Mathf.MoveTowards(
