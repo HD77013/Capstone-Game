@@ -2436,7 +2436,7 @@ MonoBehaviour:
   pRb2d: {fileID: 848018597}
   animator: {fileID: 147778774}
   jumpForce: 1000
-  walkSpeed: 100
+  walkSpeed: 10
   audio: {fileID: 848018600}
   boxSize: {x: 1.95, y: 4.5}
   castDistance: -0.04

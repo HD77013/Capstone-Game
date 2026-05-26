@@ -15,7 +15,9 @@ public class PlayerWalking : PlayerBase
         
         if (move != Vector3.zero)
         {
+            // Handles player orientation
             state.player.transform.localScale = new Vector3(move.x, 1f, 1f);
+            
             state.animator.SetBool("Walking", true);
         }
         else
@@ -24,7 +26,7 @@ public class PlayerWalking : PlayerBase
             state.SwitchState(PlayerStateType.Idle);
         }
         
-        state.pRb2d.AddForce(direction * state.walkSpeed);
+        Debug.Log(direction * state.walkSpeed);
         
         if (state.input.JumpPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Jumping);
@@ -35,5 +37,10 @@ public class PlayerWalking : PlayerBase
         if (state.input.isBlocking && Grounded(state))
             state.SwitchState(PlayerStateType.Blocking);
         
+    }
+    
+    public override void FixedUpdateState(PlayerStateManager state)
+    {
+        state.pRb2d.linearVelocity = new Vector2(direction.x * state.walkSpeed, state.pRb2d.linearVelocity.y);
     }
 }

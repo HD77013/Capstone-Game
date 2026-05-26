@@ -51,8 +51,6 @@ public class PlayerStateManager : MonoBehaviour
     [Header("Block")] public AudioClip[] blockedSounds;
 
     [Header("Death")] public bool isDead;
-    
-    
     void Awake()
     {
         stateDictionary = new Dictionary<PlayerStateType, PlayerBase>()
@@ -68,10 +66,10 @@ public class PlayerStateManager : MonoBehaviour
         SwitchState(PlayerStateType.Idle);
     }
     
-    void Update()
-    {
-        currentState.UpdateState(this);   
-    }
+    void Update() => currentState.UpdateState(this);   
+    
+    void FixedUpdate() => currentState.FixedUpdateState(this);
+    
 
     public void SwitchState(PlayerStateType newStateType)       // Looking up for state in dictionary when called
     {
