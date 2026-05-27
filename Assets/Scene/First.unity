@@ -524,7 +524,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &296224979
 Rigidbody2D:
   serializedVersion: 5
@@ -614,7 +614,7 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: 1f53a5fc6bd934e46a5d8cfa8fd27b64, type: 3}
   attackCooldownDuration: 5
   Health: 4
-  Damage: 0
+  Damage: 1
   speed: 10
   chaseSpeed: 10
   blockChance: 0

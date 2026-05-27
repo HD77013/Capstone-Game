@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerDeath : MonoBehaviour
 {
@@ -57,6 +59,9 @@ public class PlayerDeath : MonoBehaviour
         animator.SetTrigger("Respawn");
         
         deathScreen.alpha = 0f;
+
+        string firstLVL = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(firstLVL);
     } 
 
     // Update is called once per frame

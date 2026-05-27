@@ -78,9 +78,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public void DepleteEnergy()
+    public void DepleteEnergy(int amount)
     {
-        energy--;
+        energy -= amount;
         UpdateEnergyDisplay();
     }
 

@@ -378,13 +378,18 @@ public class EnemyScript : MonoBehaviour
     {
         if (CheckAttack())
         {
-            if (!_player.IsBlocking)
+            if (_player.IsBlocking)
+            {
+                _playerScript.TakeDamage(0, transform, 30f, 0.4f);
+                _playerScript.DepleteEnergy(5);
+            }
+            else
             {
                 soundManager.PlayOneShot(hitSound);
                 _playerScript.PlayBlood(transform);
+
+                _playerScript.TakeDamage(Damage, transform, 30f, 0.4f);
             }
-            
-            _playerScript.TakeDamage(Damage, transform, 30f, 0.4f);
 
             // Hand off all three parameters through the state manager // Debating whether this should be revised or not
             // _player.TriggerKnockback(transform, 30f, 0.4f);
