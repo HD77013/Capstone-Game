@@ -59,7 +59,7 @@ public class EnemyScript : MonoBehaviour
     
     [Header("Basic Attributes")] 
     public float Health;
-    public float Damage;
+    public int Damage;
     public float speed;
     public float chaseSpeed;
 

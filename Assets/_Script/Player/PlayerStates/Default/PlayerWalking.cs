@@ -31,7 +31,7 @@ public class PlayerWalking : PlayerBase
         if (state.input.JumpPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Jumping);
         
-        if (state.input.AttackPressed && Grounded(state))
+        if (state.input.AttackPressed && Grounded(state) && state.data.EnoughEnergy())
             state.SwitchState(PlayerStateType.Attack);
         
         if (state.input.isBlocking && Grounded(state))

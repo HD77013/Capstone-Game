@@ -116,10 +116,10 @@ public class PlayerStateManager : MonoBehaviour
 
     public void OnRespawn()
     {
-
-
         isDead = false;
         input.isEnabled = true;
+        
+        data.ResetAttributes();
     }
 
     public void StopPlayer()

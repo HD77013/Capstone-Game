@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+
 public class PlayerScript : MonoBehaviour
 {
     public Rigidbody2D pRb2d;
@@ -33,16 +35,126 @@ public class PlayerScript : MonoBehaviour
     public AudioClip[] blockedSound;
     
     [Header("Basic attributes")]
-    public float health;
-    public float maxHealth;
+    public int health;
+    public int maxHealth;
     public float baseDamage;
+    public int energy;
+    public int maxEnergy;
+
+    public bool isRestoringEnergy;
+    
+    
+    
+    [Header("UI")] 
+    public Sprite[] HP;
+    public Sprite[] Energy;
+
+    public Image healthDisplay;
+    public Image energyDisplay;
+    
+    public CanvasGroup damageScreen;
+
+    private float energyRestoreTimer = 0f;
+    public float energyRestoreInterval = 1.0f;
+    
+    public void Update()
+    {
+
+        if (energy < maxEnergy && !isAttacking)
+        {
+            energyRestoreTimer += Time.deltaTime;
+
+            if (energyRestoreTimer >= energyRestoreInterval)
+            {
+                energyRestoreTimer = 0;
+                energy++;
+                UpdateEnergyDisplay();
+                
+            }
+        }
+        else if (isAttacking)
+        {
+            energyRestoreTimer = 0;
+        }
+    }
+
+    public void DepleteEnergy()
+    {
+        energy--;
+        UpdateEnergyDisplay();
+    }
+
+    public bool EnoughEnergy()
+    {
+        return energy >= 5;
+    }
+
+    public void ResetAttributes()
+    {
+        health = maxHealth;
+        damageScreen.alpha = 0;
+        healthDisplay.sprite = HP[0];
+        energyDisplay.sprite = Energy[0];
+    }
+
+    void UpdateEnergyDisplay()
+    {
+        if (!state.isDead)
+        {
+            switch (energy)
+            {
+                case 25:
+                    energyDisplay.sprite = Energy[0];
+                    break;
+                case 20:
+                    energyDisplay.sprite = Energy[1];
+                    break;
+                case 15:
+                    energyDisplay.sprite = Energy[2];
+                    break;
+                case 10:
+                    energyDisplay.sprite = Energy[3];
+                    break;
+                case 5:
+                    energyDisplay.sprite = Energy[4];
+                    break;
+            }
+        }
+    }
 
     // Called by hurt state
-    public void TakeDamage(float amount, Transform source, float force, float duration)
+    public void TakeDamage(int amount, Transform source, float force, float duration)
     {
         health -= amount;
         
         state.OnDamageTaken(source, force, duration);
+        
+        if (!state.isDead)
+        {
+            switch (health)
+            {
+                case 10:
+                    damageScreen.alpha = 0;
+                    healthDisplay.sprite = HP[0];
+                    break;
+                case 8:
+                    damageScreen.alpha = 0.1f;
+                    healthDisplay.sprite = HP[1];
+                    break;
+                case 6:
+                    damageScreen.alpha = 0.2f;
+                    healthDisplay.sprite = HP[2];
+                    break;
+                case 4:
+                    damageScreen.alpha = 0.3f;
+                    healthDisplay.sprite = HP[3];
+                    break;
+                case 2:
+                    damageScreen.alpha = 0.4f;
+                    healthDisplay.sprite = HP[4];
+                    break;
+            }
+        }
     }
     
     // Will be actived by anim event

@@ -5,7 +5,10 @@ public class PlayerAttacking : PlayerBase
     public override void EnterState(PlayerStateManager state)
     {
         if (state.combo.comboStep == 0 && !state.combo.OnComboCooldown)
+        {
             state.combo.StartCombo();
+            state.data.DepleteEnergy();
+        }
 
     }
     
@@ -17,6 +20,7 @@ public class PlayerAttacking : PlayerBase
             {
                 Debug.Log("Next");
                 state.combo.ComboStep();
+                state.data.DepleteEnergy();
             }
             else
                 state.combo.InputBuffer = true;
