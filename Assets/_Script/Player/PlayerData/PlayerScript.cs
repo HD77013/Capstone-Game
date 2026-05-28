@@ -54,12 +54,16 @@ public class PlayerScript : MonoBehaviour
     
     public CanvasGroup damageScreen;
 
+    [Header("Energy Restore")]
     private float energyRestoreTimer = 0f;
     public float energyRestoreInterval = 1.0f;
     
+    [Header("Health Restore")]
+    private float healthRestoreTimer = 0f;
+    public float healthRestoreInterval = 1.0f;
+    
     public void Update()
     {
-
         if (energy < maxEnergy && !isAttacking)
         {
             energyRestoreTimer += Time.deltaTime;
@@ -76,12 +80,28 @@ public class PlayerScript : MonoBehaviour
         {
             energyRestoreTimer = 0;
         }
+
+        if (health < maxHealth)
+        {
+            healthRestoreTimer += Time.deltaTime;
+
+            if (healthRestoreTimer >= energyRestoreInterval)
+            {
+                healthRestoreTimer = 0;
+                health++;
+                UpdateHealthDisplay();
+            }
+        }
     }
 
     public void DepleteEnergy(int amount)
     {
         energy -= amount;
         UpdateEnergyDisplay();
+
+        // Prevents depletion going into the negative
+        if (energy < 0)
+            energy = 0;
     }
 
     public bool EnoughEnergy()
@@ -122,13 +142,8 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // Called by hurt state
-    public void TakeDamage(int amount, Transform source, float force, float duration)
+    void UpdateHealthDisplay()
     {
-        health -= amount;
-        
-        state.OnDamageTaken(source, force, duration);
-        
         if (!state.isDead)
         {
             switch (health)
@@ -155,6 +170,15 @@ public class PlayerScript : MonoBehaviour
                     break;
             }
         }
+    }
+
+    // Called by hurt state
+    public void TakeDamage(int amount, Transform source, float force, float duration)
+    {
+        healthRestoreTimer = 0;
+        health -= amount;
+        
+        state.OnDamageTaken(source, force, duration);
     }
     
     // Will be actived by anim event

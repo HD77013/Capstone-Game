@@ -13,13 +13,15 @@ public class PlayerBlocking : PlayerBase
     {
         if (!state.input.isBlocking)
             state.SwitchState(PlayerStateType.Idle);
+
+        if (!state.data.EnoughEnergy())
+            state.SwitchState(PlayerStateType.Idle);
+        
         
     }
 
     public override void ExitState(PlayerStateManager state)
     {
         state.animator.SetBool("Blocking", false);
-        
-        state.IsBlocking = false;
     }
 }

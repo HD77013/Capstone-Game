@@ -10,6 +10,7 @@ public class PlayerAttacking : PlayerBase
             state.data.DepleteEnergy(1);
         }
 
+        state.IsBlocking = false;
     }
     
     public override void UpdateState(PlayerStateManager state)
@@ -31,5 +32,12 @@ public class PlayerAttacking : PlayerBase
         {
             state.SwitchState(PlayerStateType.Idle);
         }
+    }
+    
+    public override void ExitState(PlayerStateManager state)
+    {
+        state.data.isAttacking = false;
+        state.combo.comboStep = 0;
+        state.combo.OnComboCooldown = false;
     }
 }

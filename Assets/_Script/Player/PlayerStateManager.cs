@@ -41,14 +41,13 @@ public class PlayerStateManager : MonoBehaviour
 
     [Header("State checking")]
     public bool onCombo;
-    public bool IsBlocking { get; internal set; }
+
+    public bool IsBlocking; 
     
     [Header("Knockback Data")]
     public Transform knockbackSource;
     public float knockbackForce;
     public float knockbackDuration;
-
-    [Header("Block")] public AudioClip[] blockedSounds;
 
     [Header("Death")] public bool isDead;
     void Awake()
@@ -78,7 +77,7 @@ public class PlayerStateManager : MonoBehaviour
 
     public void SwitchState(PlayerBase state)       // Actually switches to that state while exiting out of the other
     {
-   //     Debug.Log("State switched " + state);
+        Debug.Log("State switched " + state);
         currentState?.ExitState(this);
         currentState = state;
         state.EnterState(this);
@@ -99,27 +98,12 @@ public class PlayerStateManager : MonoBehaviour
             knockbackSource = source;
             knockbackForce  = force;
             knockbackDuration = duration;
-        
-            if (!IsBlocking)
-                SwitchState(PlayerStateType.Damaged);
-            else
-            {
-                animator.Play("Block Reaction");
-                int random = Random.Range(0, 5);
-                AudioClip blocked = blockedSounds[random];
             
-                audio.PlayOneShot(blocked);
-            }
+            SwitchState(PlayerStateType.Damaged);
+
+            
         }
         
-    }
-
-    public void OnRespawn()
-    {
-        isDead = false;
-        input.isEnabled = true;
-        
-        data.ResetAttributes();
     }
 
     public void StopPlayer()
@@ -127,12 +111,6 @@ public class PlayerStateManager : MonoBehaviour
         currentState?.ExitState(this);
         SwitchState(PlayerStateType.Idle);
         input.isEnabled = false;
-    }
-
-    public void Allow()
-    {
-        SwitchState(PlayerStateType.Idle);
-        input.isEnabled = true;
     }
 
     private void OnDrawGizmos()     // For hitboxes

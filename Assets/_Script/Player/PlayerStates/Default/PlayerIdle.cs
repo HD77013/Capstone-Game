@@ -5,6 +5,7 @@ public class PlayerIdle : PlayerBase
     public override void EnterState(PlayerStateManager state)
     {
         state.animator.SetBool("Walking", false);
+        state.IsBlocking = false;
     }
     
     public override void UpdateState(PlayerStateManager state)
@@ -18,7 +19,7 @@ public class PlayerIdle : PlayerBase
         if (state.input.AttackPressed && Grounded(state) && state.data.EnoughEnergy())
             state.SwitchState(PlayerStateType.Attack);
         
-        if (state.input.isBlocking && Grounded(state))
+        if (state.input.isBlocking && Grounded(state) && state.data.EnoughEnergy())
             state.SwitchState(PlayerStateType.Blocking);
         
     }

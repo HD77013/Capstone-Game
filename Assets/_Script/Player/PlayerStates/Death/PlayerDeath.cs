@@ -8,6 +8,8 @@ public class PlayerDeath : MonoBehaviour
 {
     public PlayerStateManager player;
     public CameraScript camera;
+
+    public GameObject UI;
     
     public Animator animator;
     public Rigidbody2D pRb2d;
@@ -53,16 +55,17 @@ public class PlayerDeath : MonoBehaviour
 
     void Respawn()
     {
-        player.OnRespawn();
-
         camera.zoomIn = false;
-        animator.SetTrigger("Respawn");
-        
         deathScreen.alpha = 0f;
 
         string firstLVL = SceneManager.GetActiveScene().name;
+    
+        Destroy(player.gameObject);
+        Destroy(camera.gameObject);
+        Destroy(UI);
+    
         SceneManager.LoadScene(firstLVL);
-    } 
+    }
 
     // Update is called once per frame
     void Update()

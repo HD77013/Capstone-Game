@@ -26,8 +26,6 @@ public class PlayerWalking : PlayerBase
             state.SwitchState(PlayerStateType.Idle);
         }
         
-        Debug.Log(direction * state.walkSpeed);
-        
         if (state.input.JumpPressed && Grounded(state))
             state.SwitchState(PlayerStateType.Jumping);
         
