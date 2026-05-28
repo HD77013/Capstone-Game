@@ -4,7 +4,7 @@ public class PlayerAttacking : PlayerBase
 {
     public override void EnterState(PlayerStateManager state)
     {
-        if (state.combo.comboStep == 0 && !state.combo.OnComboCooldown)
+        if (state.combo.comboStep == 0 && !state.combo.OnComboCooldown && state.combo.comboStep < state.combo.maxCombo)
         {
             state.combo.StartCombo();
             state.data.DepleteEnergy(1);

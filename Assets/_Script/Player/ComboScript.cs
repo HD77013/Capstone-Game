@@ -58,6 +58,8 @@ public class ComboScript : MonoBehaviour
     
     public void ComboStep()
     {
+        if (comboStep >= maxCombo) return; // Hard stop
+
         RandomSoundPitching();
         
         comboStep++;
@@ -71,12 +73,6 @@ public class ComboScript : MonoBehaviour
         
         player.pRb2d.linearVelocity = Vector2.zero;
         player.pRb2d.linearVelocity = new Vector2(player.GetFacingDirection() * player.forwardForce, 0);
-        
-        if (comboStep >= maxCombo)
-        {
-            ComboEnd();
-        }
-        
     }
     
     // Called by animation events
@@ -87,8 +83,12 @@ public class ComboScript : MonoBehaviour
     // Called towards the end of the animation
     public void CloseComboWindow()
     {
-        if (InputBuffer && !OnComboCooldown) ComboStep();
-        else canCombo = false;    
+        Debug.Log($"CloseComboWindow fired — comboStep: {comboStep}, maxCombo: {maxCombo}, InputBuffer: {InputBuffer}");
+
+        if (InputBuffer && !OnComboCooldown && comboStep < maxCombo) ComboStep();
+        else canCombo = false;
+
+
     }
     
     // Called by event in very last keyframe of animation
