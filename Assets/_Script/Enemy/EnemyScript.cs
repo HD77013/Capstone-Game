@@ -210,7 +210,7 @@ public class EnemyScript : MonoBehaviour
                 animator.SetBool("Walking", true);
             }
 
-            if (Mathf.Abs(follow.x) > 0.001f && !(isAttacking || canAttack))
+            if (Mathf.Abs(follow.x) > 0.15f)
             {
                 facingDirection = follow.x < 0 ? -1f : 1f;
             }

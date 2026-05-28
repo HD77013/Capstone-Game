@@ -60,7 +60,7 @@ public class PlayerScript : MonoBehaviour
     
     [Header("Health Restore")]
     private float healthRestoreTimer = 0f;
-    public float healthRestoreInterval = 1.0f;
+    public float healthRestoreInterval = 10.0f;
     
     public void Update()
     {
@@ -121,24 +121,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (!state.isDead)
         {
-            switch (energy)
-            {
-                case 25:
-                    energyDisplay.sprite = Energy[0];
-                    break;
-                case 20:
-                    energyDisplay.sprite = Energy[1];
-                    break;
-                case 15:
-                    energyDisplay.sprite = Energy[2];
-                    break;
-                case 10:
-                    energyDisplay.sprite = Energy[3];
-                    break;
-                case 5:
-                    energyDisplay.sprite = Energy[4];
-                    break;
-            }
+            float normalized = (float)energy / maxEnergy; // 0.0 to 1.0
+            int index = Mathf.Clamp(Energy.Length - 1 - Mathf.FloorToInt(normalized * Energy.Length), 0, Energy.Length - 1);
+            energyDisplay.sprite = Energy[index];
         }
     }
 
@@ -146,29 +131,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (!state.isDead)
         {
-            switch (health)
-            {
-                case 10:
-                    damageScreen.alpha = 0;
-                    healthDisplay.sprite = HP[0];
-                    break;
-                case 8:
-                    damageScreen.alpha = 0.1f;
-                    healthDisplay.sprite = HP[1];
-                    break;
-                case 6:
-                    damageScreen.alpha = 0.2f;
-                    healthDisplay.sprite = HP[2];
-                    break;
-                case 4:
-                    damageScreen.alpha = 0.3f;
-                    healthDisplay.sprite = HP[3];
-                    break;
-                case 2:
-                    damageScreen.alpha = 0.4f;
-                    healthDisplay.sprite = HP[4];
-                    break;
-            }
+            float normalized = (float)health / maxHealth; // 0.0 to 1.0
+            int index = Mathf.Clamp(HP.Length - 1 - Mathf.FloorToInt(normalized * HP.Length), 0, HP.Length - 1);
+            healthDisplay.sprite = HP[index];
         }
     }
 
@@ -179,6 +144,7 @@ public class PlayerScript : MonoBehaviour
         health -= amount;
         
         state.OnDamageTaken(source, force, duration);
+        UpdateHealthDisplay();
     }
     
     // Will be actived by anim event
