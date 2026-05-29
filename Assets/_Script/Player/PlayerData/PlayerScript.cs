@@ -165,7 +165,7 @@ public class PlayerScript : MonoBehaviour
                 }
                 else
                 {
-                    AudioClip hits = hitSound[combo.comboStep];
+                    AudioClip hits = hitSound[combo.comboStep - 1];
                     soundManager.PlayOneShot(hits);
                 }
                 
