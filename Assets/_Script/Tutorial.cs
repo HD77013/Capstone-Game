@@ -19,8 +19,9 @@ public class Tutorial : MonoBehaviour
     [SerializeField] private CameraScript cam;
 
     private TextMeshProUGUI textMesh;
-    private bool queuedTutorial;
-    private int step = 0; // 0 = move, 1 = jump, 2 = attack
+    [SerializeField] private bool queuedTutorial;
+    [SerializeField] private int step = 0; // 0 = move, 1 = jump, 2 = attack
+    private int count;
 
     private readonly string[] promptMessages =
     {
@@ -42,7 +43,7 @@ public class Tutorial : MonoBehaviour
     {
         "You have an energy capacity as shown on the bottom left of your screen,",
         "You can loose energy by attacking or blocking an enemy's attack",
-        "With that in mind, don't get ganged up and have fun lol"
+        "With that in mind, have fun lol"
     };
 
     void Start()
@@ -54,9 +55,12 @@ public class Tutorial : MonoBehaviour
 
     void PromptStep()
     {
-        if (step <= 4)
+        // Introduces mechanics but if all steps are done, tutorial conclusion begins
+        if (step >= 4)
         {
+            Debug.Log("Completed Steps");
             textMesh.text = extraMesages[0];
+            text.SetActive(true);
         }
         else
         {
@@ -71,6 +75,7 @@ public class Tutorial : MonoBehaviour
 
     void Update()
     {
+        // Will start instructing player when conditions are met
         if (queuedTutorial && next.action.WasPressedThisFrame())
         {
             queuedTutorial = false;
@@ -78,13 +83,28 @@ public class Tutorial : MonoBehaviour
             textMesh.text = instructionMessages[step];
             return;
         }
-        else if (step <= 4  && next.action.WasPressedThisFrame())
+
+        // The outro of the tutorial before you play game
+        else if (step >= 4  && next.action.WasPressedThisFrame())
         {
-            textMesh.text = extraMesages[+1];
+            Debug.Log("Last Texts");
+            count++;
+
+            if (count <= 2)
+                textMesh.text = extraMesages[count];
+            else
+            {
+                text.SetActive(false);
+                cam.zoomIn = false;
+                firstEnemy.enabled = true;
+            }
+
+
         }
 
         if (queuedTutorial) return;
 
+        // Following condition needing to be met to advance tutorials
         switch (step)
         {
             case 0:
