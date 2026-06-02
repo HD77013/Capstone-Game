@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class EnemyScript : MonoBehaviour
 {
+    public NextLVL npcManager;
+    
     public Rigidbody2D enemyRB;
 
     public GameObject player;
@@ -254,6 +256,8 @@ public class EnemyScript : MonoBehaviour
             isDead = true;
             animator.SetBool("Dead", true);
 
+            npcManager.RequestRemove(this);
+            
             float knockBackForce = Random.Range(50, 90);
 
             PlayBlood(player.transform);
