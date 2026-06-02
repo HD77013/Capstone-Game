@@ -97,6 +97,8 @@ public class Tutorial : MonoBehaviour
                 text.SetActive(false);
                 cam.zoomIn = false;
                 firstEnemy.enabled = true;
+
+                this.enabled = false;
             }
 
 
