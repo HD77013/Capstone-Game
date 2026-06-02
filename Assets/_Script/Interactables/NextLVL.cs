@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -18,7 +19,8 @@ public class NextLVL : MonoBehaviour
     public Vector3 nextTransformPos;
 
     public GameObject arrow;
-    
+
+    public GameObject canvas;
     public GameObject text;
     private TextMeshProUGUI textMesh;
 
@@ -26,8 +28,19 @@ public class NextLVL : MonoBehaviour
 
     void Start()
     {
-        textMesh = text.GetComponent<TextMeshProUGUI>();
-        
+        if (canvas == null) canvas = GameObject.FindGameObjectWithTag("UI");
+
+        if (canvas != null)
+        {
+            foreach (Transform child in canvas.transform)
+            {
+                if (child.tag == "Notif")
+                    text = child.gameObject;
+            }
+
+            if (text != null) textMesh = text.GetComponent<TextMeshProUGUI>();
+        }
+
         FindAllNPCs();
     }
     
