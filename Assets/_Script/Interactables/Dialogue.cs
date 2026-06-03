@@ -65,7 +65,7 @@ public class Dialogue : MonoBehaviour
         Debug.Log("Dialogue begins!");
 
         camera.zoomVal = 4.0f;
-        camera.zoomIn = true;
+        camera.zoom = true;
         script.StopPlayer();
 
         spawnedText = Instantiate(dialogue, canvas);

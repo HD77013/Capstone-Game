@@ -69,7 +69,7 @@ public class Tutorial : MonoBehaviour
             text.SetActive(true);
         }
 
-        cam.zoomIn = true;
+        cam.zoom = true;
         cam.zoomVal = 3.0f;
     }
 
@@ -79,7 +79,7 @@ public class Tutorial : MonoBehaviour
         if (queuedTutorial && next.action.WasPressedThisFrame())
         {
             queuedTutorial = false;
-            cam.zoomIn = false;
+            cam.zoom = false;
             textMesh.text = instructionMessages[step];
             return;
         }
@@ -95,7 +95,7 @@ public class Tutorial : MonoBehaviour
             else
             {
                 text.SetActive(false);
-                cam.zoomIn = false;
+                cam.zoom = false;
                 firstEnemy.enabled = true;
 
                 this.enabled = false;

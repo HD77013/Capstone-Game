@@ -31,7 +31,7 @@ public class PlayerDeath : MonoBehaviour
         pRb2d.linearVelocity = new Vector2(dir.x * knockbackForce, 0f);
 
         camera.zoomVal = 3.0f;
-        camera.zoomIn = true;
+        camera.zoom = true;
         
         animator.Play("Death");
         source.PlayOneShot(deathSound);
@@ -55,7 +55,7 @@ public class PlayerDeath : MonoBehaviour
 
     void Respawn()
     {
-        camera.zoomIn = false;
+        camera.zoom = false;
         deathScreen.alpha = 0f;
 
         string firstLVL = SceneManager.GetActiveScene().name;

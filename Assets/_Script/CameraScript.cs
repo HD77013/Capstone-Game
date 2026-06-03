@@ -14,7 +14,7 @@ public class CameraScript : MonoBehaviour
 
     public bool onCutscene;
 
-    public bool zoomIn;    
+    public bool zoom;    
     
     public float zoomRate = 1.0f;
     
@@ -56,7 +56,7 @@ public class CameraScript : MonoBehaviour
             }
         }
 
-        if (zoomIn)
+        if (zoom)
         {
             if (notReachedVal)
             {
@@ -80,6 +80,11 @@ public class CameraScript : MonoBehaviour
                 cam.orthographicSize = intialSize;
                 notReachedVal = true;
             }
+        }
+
+        if (onCutscene)
+        {
+
         }
     }
 }
