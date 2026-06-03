@@ -60,14 +60,10 @@ public class CameraScript : MonoBehaviour
                 }
             }
         }
-        else
+        else if (!notReachedVal || cam.orthographicSize != intialSize)
         {
-            // Reset when alive
-            if (!notReachedVal || cam.orthographicSize != intialSize)
-            {
-                cam.orthographicSize = intialSize;
-                notReachedVal = true;
-            }
+            cam.orthographicSize = intialSize;
+            notReachedVal = true;
         }
 
         Vector3 follow = Vector3.Lerp(Camera.position, camDestination, lerpSpeed * Time.deltaTime);

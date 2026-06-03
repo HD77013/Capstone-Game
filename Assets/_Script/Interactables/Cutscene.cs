@@ -27,9 +27,9 @@ public class Cutscene : MonoBehaviour
     void ShowCutscene()
     {
         camera.onCutscene = true;
-        camera.zoom = true;
+        camera.zoomVal = 11.0f;
 
-        camera.zoomVal = 7.0f;
+        camera.zoom = true;
         camera.camDestination = new Vector3(camPos.x, camPos.y, -1f);
     }
 
