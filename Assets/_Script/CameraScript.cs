@@ -14,7 +14,9 @@ public class CameraScript : MonoBehaviour
 
     public bool onCutscene;
 
-    public bool zoom;    
+    public bool zoom;
+
+    public Vector3 camDestination;
     
     public float zoomRate = 1.0f;
     
@@ -39,22 +41,8 @@ public class CameraScript : MonoBehaviour
         Vector3 playerPos = new Vector3(player.position.x, player.position.y, -1f);
         
         if (!onCutscene)
-        {
-            Vector3 follow = Vector3.Lerp(Camera.position, playerPos, lerpSpeed * Time.deltaTime);
-
-            if (shake > 0)
-            {
-                Vector3 cam = Random.insideUnitSphere * shakeAmount;
-                transform.position = follow + new Vector3(cam.x * follow.x, cam.y * follow.y, -1f);
-                shake -= Time.deltaTime * decreaseFactor;
-
-            }
-            else
-            {
-                shake = 0f;
-                transform.position = follow;
-            }
-        }
+            camDestination = playerPos;
+        
 
         if (zoom)
         {
@@ -85,6 +73,21 @@ public class CameraScript : MonoBehaviour
         if (onCutscene)
         {
 
+        }
+
+        Vector3 follow = Vector3.Lerp(Camera.position, camDestination, lerpSpeed * Time.deltaTime);
+
+        if (shake > 0)
+        {
+            Vector3 cam = Random.insideUnitSphere * shakeAmount;
+            transform.position = follow + new Vector3(cam.x * follow.x, cam.y * follow.y, -1f);
+            shake -= Time.deltaTime * decreaseFactor;
+
+        }
+        else
+        {
+            shake = 0f;
+            transform.position = follow;
         }
     }
 }
