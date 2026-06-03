@@ -70,11 +70,6 @@ public class CameraScript : MonoBehaviour
             }
         }
 
-        if (onCutscene)
-        {
-
-        }
-
         Vector3 follow = Vector3.Lerp(Camera.position, camDestination, lerpSpeed * Time.deltaTime);
 
         if (shake > 0)
