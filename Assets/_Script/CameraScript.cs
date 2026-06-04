@@ -54,13 +54,13 @@ public class CameraScript : MonoBehaviour
                     zoomRate * Time.deltaTime
                 );
         
-                if (cam.orthographicSize <= zoomVal)
+                if (Mathf.Approximately(cam.orthographicSize, zoomVal))
                 {
                     notReachedVal = false;
                 }
             }
         }
-        else if (!notReachedVal || cam.orthographicSize != intialSize)
+        else if (!notReachedVal || !Mathf.Approximately(cam.orthographicSize, intialSize))
         {
             cam.orthographicSize = intialSize;
             notReachedVal = true;

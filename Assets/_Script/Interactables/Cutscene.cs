@@ -20,14 +20,16 @@ public class Cutscene : MonoBehaviour
 
         if (player != null)
         {
-            ShowCutscene();
+            AdjustCam();
         }
     }
 
-    void ShowCutscene()
+    // Camera work for cutscene
+    void AdjustCam()
     {
         camera.onCutscene = true;
         camera.zoomVal = 11.0f;
+        camera.zoomRate = 6.5f;
 
         camera.zoom = true;
         camera.camDestination = new Vector3(camPos.x, camPos.y, -1f);
