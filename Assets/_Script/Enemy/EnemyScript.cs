@@ -116,7 +116,7 @@ public class EnemyScript : MonoBehaviour
         
         direction = Vector2.right * facingDirection;
         
-        centered = true;
+        patrolCenter = transform.position;
         
         canAttack = true;
     }
@@ -313,16 +313,17 @@ public class EnemyScript : MonoBehaviour
         Vector2 playerPos = player.transform.position;
         float distance = Vector2.Distance(transform.position, playerPos);
 
-        canChase = distance < detectionThreshold;
+        // Once detected, player will always be chased by enemy
+        if (distance < detectionThreshold)
+            canChase = true;
+        
 
         if (!canChase)
         {
-            CenterPatrol();
-            
-            // Flip direction at patrol boundaries
-            if (centered && (transform.position.x >= rightPatrolX + patrolCenter.x || transform.position.x <= leftPatrolX + patrolCenter.x))
+            if (transform.position.x >= rightPatrolX + patrolCenter.x ||
+                transform.position.x <= leftPatrolX + patrolCenter.x)
             {
-                Debug.Log("Flip direction");
+                Debug.Log("E");
                 facingDirection *= -1;
                 timer = 0;
                 randomTime = Random.Range(minWalkTime, maxWalkTime);
@@ -330,15 +331,6 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    void CenterPatrol()
-    {
-        if (!centered)
-        {
-            patrolCenter = transform.position;
-            centered = true;
-        }
-    }
-    
     private void Attack()
     {
         if (Time.time - lastAttackTime >= attackCooldownDuration)
