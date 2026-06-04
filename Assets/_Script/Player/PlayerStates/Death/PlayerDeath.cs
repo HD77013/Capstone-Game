@@ -32,6 +32,7 @@ public class PlayerDeath : MonoBehaviour
 
         camera.zoomVal = 3.0f;
         camera.zoom = true;
+        camera.zoomToInitial = false;
         
         animator.Play("Death");
         source.PlayOneShot(deathSound);

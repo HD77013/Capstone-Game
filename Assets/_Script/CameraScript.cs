@@ -15,6 +15,7 @@ public class CameraScript : MonoBehaviour
     public bool onCutscene;
 
     public bool zoom;
+    public bool zoomToInitial;
 
     public Vector3 camDestination;
     
@@ -62,7 +63,20 @@ public class CameraScript : MonoBehaviour
         }
         else if (!notReachedVal || !Mathf.Approximately(cam.orthographicSize, intialSize))
         {
-            cam.orthographicSize = intialSize;
+            // Recommended to set to true once zoom is set to true by third party scripts
+            if (zoomToInitial)
+            {
+                cam.orthographicSize = Mathf.MoveTowards(
+                    cam.orthographicSize, 
+                    intialSize, 
+                    zoomRate * Time.deltaTime
+                );
+            }
+            else
+            {
+                cam.orthographicSize = intialSize;
+            }
+
             notReachedVal = true;
         }
 

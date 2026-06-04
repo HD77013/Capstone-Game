@@ -69,6 +69,7 @@ public class Tutorial : MonoBehaviour
             text.SetActive(true);
         }
 
+        cam.zoomToInitial = false;
         cam.zoom = true;
         cam.zoomVal = 3.0f;
     }
