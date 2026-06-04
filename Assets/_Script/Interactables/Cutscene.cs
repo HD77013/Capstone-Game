@@ -1,11 +1,18 @@
+using System.Collections;
 using UnityEngine;
 
 public class Cutscene : MonoBehaviour
 {
     private PlayerScript player;
+
+    private bool cutsceneTriggered;
+
+    private Coroutine cutRoutine;
     
     public CameraScript camera;
 
+    [Header("Modifiable Variables")]
+    public float cutsceneTime;
     public Vector3 camPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,9 +25,15 @@ public class Cutscene : MonoBehaviour
     {
         player = GameObject.Find("Player").GetComponent<PlayerScript>();
 
-        if (player != null)
+        if (player != null && !cutsceneTriggered)
         {
+            cutsceneTriggered = true;
             AdjustCam();
+            
+            if (cutRoutine != null)
+                StopCoroutine(cutRoutine);
+
+            cutRoutine = StartCoroutine(cutsceneDuration());
         }
     }
 
@@ -33,6 +46,14 @@ public class Cutscene : MonoBehaviour
 
         camera.zoom = true;
         camera.camDestination = new Vector3(camPos.x, camPos.y, -1f);
+    }
+
+    private IEnumerator cutsceneDuration()
+    {
+        
+        yield return new WaitForSeconds(cutsceneTime);
+        camera.onCutscene = false;
+        camera.zoom = false;
     }
 
     // Update is called once per frame
