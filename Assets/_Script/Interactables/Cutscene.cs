@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Cutscene : MonoBehaviour
 {
-    private PlayerScript player;
+    private PlayerStateManager player;
 
     private bool cutsceneTriggered;
 
@@ -23,12 +23,14 @@ public class Cutscene : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        player = GameObject.Find("Player").GetComponent<PlayerScript>();
+        player = GameObject.Find("Player").GetComponent<PlayerStateManager>();
 
         if (player != null && !cutsceneTriggered)
         {
             cutsceneTriggered = true;
             AdjustCam();
+
+            player.input.isEnabled = false;
             
             if (cutRoutine != null)
                 StopCoroutine(cutRoutine);
@@ -54,6 +56,7 @@ public class Cutscene : MonoBehaviour
         yield return new WaitForSeconds(cutsceneTime);
         camera.onCutscene = false;
         camera.zoom = false;
+        player.input.isEnabled = true;
     }
 
     // Update is called once per frame
