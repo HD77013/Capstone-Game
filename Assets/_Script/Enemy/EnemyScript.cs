@@ -418,7 +418,7 @@ public class EnemyScript : MonoBehaviour
         transform.localScale = new Vector3(facingDirection, 1f, 1f);
     }
 
-    public void OnDrawGizmos()
+    public void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireCube(attackPoint.transform.position+transform.forward * castDistance, atkBox);
         Gizmos.DrawWireSphere(transform.position, detectionThreshold);
