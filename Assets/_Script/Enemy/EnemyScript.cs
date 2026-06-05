@@ -34,7 +34,7 @@ public class EnemyScript : MonoBehaviour
     public bool canChase;
 
     [Header("Wander Logic")] 
-    public bool wandering;
+    private bool wandering = true;
 
     public float leftPatrolX, rightPatrolX;
     public Vector2 patrolCenter;
@@ -109,7 +109,6 @@ public class EnemyScript : MonoBehaviour
         randomTime = Random.Range(minWalkTime, maxWalkTime);
         
         timer = Random.Range(0f, randomTime);
-        wandering = Random.value > 0.5f;
         attackCooldownDuration += Random.Range(-0.4f, 0.4f);
         chaseTargetOffset = Random.Range(-1.5f, 1.5f);
         distanceTargetOffset = Random.Range(2.5f, 5.0f);
@@ -323,7 +322,6 @@ public class EnemyScript : MonoBehaviour
             if (transform.position.x >= rightPatrolX + patrolCenter.x ||
                 transform.position.x <= leftPatrolX + patrolCenter.x)
             {
-                Debug.Log("E");
                 facingDirection *= -1;
                 timer = 0;
                 randomTime = Random.Range(minWalkTime, maxWalkTime);
