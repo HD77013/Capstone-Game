@@ -85,7 +85,7 @@ public class CameraScript : MonoBehaviour
         if (shake > 0)
         {
             Vector3 cam = Random.insideUnitSphere * shakeAmount;
-            transform.position = follow + new Vector3(cam.x * follow.x, cam.y * follow.y, -1f);
+            transform.position = follow + new Vector3(cam.x, cam.y, -1f);
             shake -= Time.deltaTime * decreaseFactor;
 
         }
