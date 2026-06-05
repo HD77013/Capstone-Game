@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class EnemyScript : MonoBehaviour
 {
-    public NextLVL npcManager;
-    
     public Rigidbody2D enemyRB;
 
     public GameObject player;
@@ -92,6 +90,10 @@ public class EnemyScript : MonoBehaviour
     public bool isDead;
     
     public Vector2 wanderPoints;
+
+    [Header("Third Party Functions")] 
+    public LevelContination level;
+    public NextLVL npcManager;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -252,19 +254,29 @@ public class EnemyScript : MonoBehaviour
         
         if (Health <= 0)
         {
-            isDead = true;
-            animator.SetBool("Dead", true);
-
-            npcManager.RequestRemove(this);
-            
-            float knockBackForce = Random.Range(50, 90);
-
-            PlayBlood(player.transform);
-            StartCoroutine(Knockback(player.transform, knockBackForce, 2f));
-
-            Destroy(gameObject, 5f);
+            OnDeath();
         }
         
+    }
+
+    void OnDeath()
+    {
+        isDead = true;
+        animator.SetBool("Dead", true);
+
+        npcManager.RequestRemove(this);
+        
+        // Will be manually dragged in if needed
+        if (level != null)
+            level.RequestRemove(this);   
+        
+            
+        float knockBackForce = Random.Range(50, 90);
+
+        PlayBlood(player.transform);
+        StartCoroutine(Knockback(player.transform, knockBackForce, 2f));
+
+        Destroy(gameObject, 5f);
     }
     
     public void PlayBlood(Transform source)
