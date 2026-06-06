@@ -98,6 +98,8 @@ public class EnemyScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        npcManager = GameObject.Find("Next Level").GetComponent<NextLVL>();
+        
         player = GameObject.FindGameObjectWithTag("Player");
         
         if (player != null)
@@ -263,13 +265,8 @@ public class EnemyScript : MonoBehaviour
     {
         isDead = true;
         animator.SetBool("Dead", true);
-
+        
         npcManager.RequestRemove(this);
-        
-        // Will be manually dragged in if needed
-        if (level != null)
-            level.RequestRemove(this);   
-        
             
         float knockBackForce = Random.Range(50, 90);
 

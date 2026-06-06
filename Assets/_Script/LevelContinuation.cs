@@ -1,39 +1,52 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class LevelContination : MonoBehaviour
 {
-    [SerializeField]private bool allDead;
-    [SerializeField]private bool canMoveOn;
+    public NextLVL level;
     private PlayerScript player;
 
-    public List<EnemyScript> npcs = new List<EnemyScript>();
+    public int spawnAmount;
+
+    public int waves;
+    private bool clearedWaves;
+    
+    [Tooltip("Enemy prefab here")]
+    public GameObject enemy;
 
     void Start()
     {
-        FindAllNPCs();
-    }
-    
-
-    // Finds all EnemyScript instances in the scene
-    public void FindAllNPCs()
-    {
-        npcs.Clear();
-
-        EnemyScript[] found = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
-
-        npcs.AddRange(found);
+        
     }
 
-    public void RequestRemove(EnemyScript npc)
+    public void CheckForNPC(EnemyScript npc)
     {
-        npcs.Remove(npc);
-
-        if (npcs.Count == 0)
+        if (level.npcs.Count == 0)
         {
-            allDead = true;
+            Debug.Log("Checking Wave");
+
+            if (waves != 0)
+            {
+                waves--;
+                Invoke(nameof(SpawnEnemies), 3.5f);
+            }
+            else
+            {
+                level.onGoingStage = false;
+                level.OnAllWavesCleared();
+            }
+
         }
+    }
+
+    public void SpawnEnemies()
+    {
+        for (int i = 0; i < spawnAmount; i++)
+            Instantiate(enemy, transform.position, Quaternion.identity);
+        
+        level.FindAllNPCs();
     }
     
     void Update()

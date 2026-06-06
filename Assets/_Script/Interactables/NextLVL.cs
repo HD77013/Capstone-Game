@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class NextLVL : MonoBehaviour
 {
+    public LevelContination level;
+    
     [SerializeField]private bool allDead;
     [SerializeField]private bool canMoveOn;
     private PlayerScript player;
@@ -25,6 +27,9 @@ public class NextLVL : MonoBehaviour
     private TextMeshProUGUI textMesh;
 
     [SerializeField]private InputActionReference next;
+    
+    public bool onGoingStage;
+    
 
     void Start()
     {
@@ -52,7 +57,7 @@ public class NextLVL : MonoBehaviour
         {
             canMoveOn = true;
 
-            if (allDead)
+            if (allDead && !onGoingStage)
             {
                 text.SetActive(true);
                 textMesh.text = "Press ENTER";
@@ -78,23 +83,38 @@ public class NextLVL : MonoBehaviour
 
         EnemyScript[] found = FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
 
-        npcs.AddRange(found);
+        foreach (EnemyScript npc in found)
+        {
+            if (!npc.isDead)
+                npcs.Add(npc);
+        }
     }
 
     public void RequestRemove(EnemyScript npc)
     {
         npcs.Remove(npc);
-
-        if (npcs.Count == 0)
+        
+        // If a scene allows waves of enemies (level exists in scene), OnAllWavesCleared() will be called instead
+        if (npcs.Count == 0 && level == null)
         {
             allDead = true;
             arrow.SetActive(true);
         }
+
+        if (level != null)
+            level.CheckForNPC(npc);
+        
+    }
+    
+    public void OnAllWavesCleared()
+    {
+        allDead = true;
+        arrow.SetActive(true);
     }
     
     void Update()
     {
-        if (canMoveOn & allDead && next.action.WasPressedThisFrame())
+        if (canMoveOn & allDead && next.action.WasPressedThisFrame() && !onGoingStage)
         {
             SceneManager.LoadScene(newScene);
             player.transform.position = nextTransformPos;
