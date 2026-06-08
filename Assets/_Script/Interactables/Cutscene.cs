@@ -14,6 +14,8 @@ public class Cutscene : MonoBehaviour
     [Header("Modifiable Variables")]
     public float cutsceneTime;
     public Vector3 camPos;
+    public float camSize;
+    public float camRate;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,8 +45,8 @@ public class Cutscene : MonoBehaviour
     void AdjustCam()
     {
         camera.onCutscene = true;
-        camera.zoomVal = 11.0f;
-        camera.zoomRate = 6.5f;
+        camera.zoomVal = camSize;
+        camera.zoomRate = camRate;
 
         camera.zoomToInitial = true;
         camera.zoom = true;
