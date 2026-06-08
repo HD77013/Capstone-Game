@@ -253,7 +253,7 @@ MonoBehaviour:
   canAttack: 1
   cooldown: 0
   detectionThreshold: 25
-  canChase: 0
+  canChase: 1
   leftPatrolX: -5
   rightPatrolX: 5
   patrolCenter: {x: 0, y: 0}

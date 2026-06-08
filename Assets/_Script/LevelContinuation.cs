@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -12,6 +13,9 @@ public class LevelContination : MonoBehaviour
 
     public int waves;
     private bool clearedWaves;
+
+    private Coroutine spawnRoutine;
+    public float spawnDelay;
     
     [Tooltip("Enemy prefab here")]
     public GameObject enemy;
@@ -30,7 +34,11 @@ public class LevelContination : MonoBehaviour
             if (waves != 0)
             {
                 waves--;
-                Invoke(nameof(SpawnEnemies), 3.5f);
+
+                if (spawnRoutine != null)
+                    StopCoroutine(SpawnEnemies());
+
+                spawnRoutine = StartCoroutine(SpawnEnemies());
             }
             else
             {
@@ -41,10 +49,14 @@ public class LevelContination : MonoBehaviour
         }
     }
 
-    public void SpawnEnemies()
+    public IEnumerator SpawnEnemies()
     {
         for (int i = 0; i < spawnAmount; i++)
+        {
             Instantiate(enemy, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(spawnDelay);
+        }
+
         
         level.FindAllNPCs();
     }
