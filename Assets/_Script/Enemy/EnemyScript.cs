@@ -32,7 +32,7 @@ public class EnemyScript : MonoBehaviour
     public bool canChase;
 
     [Header("Wander Logic")] 
-    private bool wandering = true;
+    public bool wandering = true;
 
     public float leftPatrolX, rightPatrolX;
     public Vector2 patrolCenter;
