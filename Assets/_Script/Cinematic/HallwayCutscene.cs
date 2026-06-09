@@ -4,11 +4,14 @@ using UnityEngine;
 public class HallwayCutscene : Cutscene
 {
     public Vector2 camPos;
+    public NextLVL scene;
     
     protected override void Start()
     {
         base.Start();
         BeginCutscene();
+
+        scene = GameObject.Find("Next Level").GetComponent<NextLVL>();
     }
 
     protected override IEnumerator PlayCutscene()
