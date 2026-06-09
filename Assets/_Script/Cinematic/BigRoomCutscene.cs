@@ -1,16 +1,28 @@
+using System.Collections;
 using UnityEngine;
 
-public class BigRoomCutscene : MonoBehaviour
+public class BigRoomCutscene : Cutscene
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Vector2 camPos;
+    private bool triggered;
+
+    protected override void Start()
     {
-        
+        base.Start();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (triggered || !collision.CompareTag("Player")) return;
         
+        triggered = true;
+        AdjustCam(camPos, 11f, 6.5f);
+        BeginCutscene();
+    }
+
+    protected override IEnumerator PlayCutscene()
+    {
+        yield return new WaitForSeconds(5.0f);
+        EndCutscene();
     }
 }
