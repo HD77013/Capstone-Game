@@ -94,7 +94,8 @@ public class EnemyScript : MonoBehaviour
     [Header("Third Party Functions")] 
     public LevelContination level;
     public NextLVL npcManager;
-    
+    public bool allowHostile;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -340,6 +341,8 @@ public class EnemyScript : MonoBehaviour
 
     private void Attack()
     {
+        if (allowHostile) return;
+
         if (Time.time - lastAttackTime >= attackCooldownDuration)
             canAttack = true;
 
