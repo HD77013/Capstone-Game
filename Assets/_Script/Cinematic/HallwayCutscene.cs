@@ -18,6 +18,7 @@ public class HallwayCutscene : MonoBehaviour
     {
         player.input.isEnabled = false;
         player.onCutscene = true;
+        scene.camera.followPlayer = true;
         
         yield return new WaitForSeconds(0.5f);
 
@@ -25,9 +26,14 @@ public class HallwayCutscene : MonoBehaviour
         player.move = Vector2.right;
 
         yield return new WaitForSeconds(3.5f);
-
-        player.onCutscene = true;
-        player.input.enabled = true;
+        
+        scene.camera.followPlayer = true;
         player.SwitchState(PlayerStateType.Idle);
+
+        yield return new WaitForSeconds(1.5f);
+
+        player.onCutscene = false;
+        player.input.enabled = true;
+
     }
 }

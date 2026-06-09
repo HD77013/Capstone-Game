@@ -13,6 +13,7 @@ public class CameraScript : MonoBehaviour
     public PlayerStateManager plrScript;
 
     public bool onCutscene;
+    public bool followPlayer = true;
 
     public bool zoom;
     public bool zoomToInitial;
@@ -41,7 +42,7 @@ public class CameraScript : MonoBehaviour
     {
         Vector3 playerPos = new Vector3(player.position.x, player.position.y, -1f);
         
-        if (!onCutscene)
+        if (!onCutscene || !followPlayer)
             camDestination = playerPos;
         
 

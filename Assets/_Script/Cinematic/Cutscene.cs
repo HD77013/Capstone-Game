@@ -5,6 +5,8 @@ public class Cutscene : MonoBehaviour
 {
     private PlayerStateManager player;
 
+    private Transform playerPos;
+
     private bool cutsceneTriggered;
 
     private Coroutine cutRoutine;
@@ -23,8 +25,9 @@ public class Cutscene : MonoBehaviour
     void Start()
     {
         if (camera == null) camera = GameObject.FindAnyObjectByType(typeof(CameraScript)) as CameraScript;
+        if (playerPos == null) playerPos = GameObject.FindGameObjectWithTag("Player").transform;
     }
-
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (colliderRequired) return;
@@ -49,6 +52,7 @@ public class Cutscene : MonoBehaviour
     public void AdjustCam()
     {
         camera.onCutscene = true;
+        camera.followPlayer = false;
         camera.zoomVal = camSize;
         camera.zoomRate = camRate;
 
@@ -64,12 +68,7 @@ public class Cutscene : MonoBehaviour
         camera.onCutscene = false;
         camera.zoom = false;
         player.input.isEnabled = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        camera.followPlayer = true;
     }
 
     public void OnDrawGizmos()
