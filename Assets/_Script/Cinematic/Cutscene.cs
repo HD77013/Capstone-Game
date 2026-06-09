@@ -35,7 +35,6 @@ public class Cutscene : MonoBehaviour
 
     public void AdjustCam(Vector3 pos, float size, float rate)
     {
-        camera.followPlayer = false;
         camera.zoomVal = size;
         camera.zoomRate = rate;
         camera.zoomToInitial = true;

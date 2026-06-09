@@ -15,6 +15,7 @@ public class BigRoomCutscene : Cutscene
     {
         if (triggered || !collision.CompareTag("Player")) return;
         
+        camera.followPlayer = false;
         triggered = true;
         AdjustCam(camPos, 11f, 6.5f);
         BeginCutscene();
