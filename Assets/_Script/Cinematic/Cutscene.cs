@@ -41,4 +41,13 @@ public class Cutscene : MonoBehaviour
         camera.zoom = true;
         camera.camDestination = new Vector3(pos.x, pos.y, -1f);
     }
+
+    public void SetCamSize(float size, float rate)
+    {
+        camera.zoomVal = size;
+        camera.zoomRate = rate;
+        camera.notReachedVal = true;
+        camera.zoom = true;
+        camera.zoomToInitial = false;
+    }
 }

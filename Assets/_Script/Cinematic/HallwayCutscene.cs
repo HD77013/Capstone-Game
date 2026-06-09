@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class HallwayCutscene : Cutscene
@@ -12,88 +12,79 @@ public class HallwayCutscene : Cutscene
         BeginCutscene();
 
         scene = GameObject.Find("Next Level").GetComponent<NextLVL>();
+
+        SetEnemyChase(false);
+        SetEnemyHostile(false);
     }
 
     protected override IEnumerator PlayCutscene()
     {
         // Player view
-        AdjustCam(Vector2.zero, 3f, 6.5f);
-        
+        SetCamSize(3f, 6.5f);
         camera.followPlayer = true;
         player.move = Vector2.right;
         player.SwitchState(PlayerStateType.Walk);
 
         yield return new WaitForSeconds(1.5f);
 
-        if (scene.npcs.Count > 0)
-        {
-            foreach (EnemyScript current in scene.npcs)
-            {
-                current.canChase = true;
-                current.canAttack = false;
-            }
-        }
-
+        SetEnemyChase(true);
         player.SwitchState(PlayerStateType.Idle);
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(0.5f);
+
+        SetEnemyChase(false);
+
+        yield return new WaitForSeconds(2.0f);
 
         // Enemy view
+        AdjustCam(camPos, 7.0f, 6.5f);
         camera.followPlayer = false;
-        AdjustCam(camPos, 3f, 6.5f);
 
         yield return new WaitForSeconds(0.7f);
 
-        if (scene.npcs.Count > 0)
-        {
-            foreach (EnemyScript current in scene.npcs)
-            {
-                current.canChase = false;
-                current.canAttack = false;
-                current.wandering = false;
-            }
-        }
+        SetEnemyChase(false);
+        SetEnemyHostile(false);
 
         yield return new WaitForSeconds(2.7f);
 
-        // Player view
+        // Quick cut: player → enemy
+        SetCamSize(3.0f, 6.5f);
         camera.followPlayer = true;
 
         yield return new WaitForSeconds(0.7f);
 
-        // Enemy view
+        AdjustCam(camPos, 3.0f, 6.5f);
         camera.followPlayer = false;
-        AdjustCam(camPos, 3f, 6.5f);
-
-        camera.followPlayer = true;
 
         yield return new WaitForSeconds(0.7f);
 
-        if (scene.npcs.Count > 0)
-        {
-            foreach (EnemyScript current in scene.npcs)
-            {
-                current.canChase = true;
-            }
-        }
+        SetEnemyChase(true);
 
         yield return new WaitForSeconds(0.7f);
 
-        // Player view
+        // Back to player
         camera.followPlayer = true;
         player.move = Vector2.right;
         player.SwitchState(PlayerStateType.Walk);
 
         yield return new WaitForSeconds(1.5f);
 
+        SetEnemyHostile(true);
         EndCutscene();
+    }
 
-        if (scene.npcs.Count > 0)
+    private void SetEnemyChase(bool canChase)
+    {
+        foreach (EnemyScript e in scene.npcs)
+            e.canChase = canChase;
+    }
+
+    private void SetEnemyHostile(bool hostile)
+    {
+        foreach (EnemyScript e in scene.npcs)
         {
-            foreach (EnemyScript current in scene.npcs)
-            {
-                current.canAttack = true;
-            }
+            e.allowHostile = hostile;
+            e.wandering = hostile;
         }
     }
 }
