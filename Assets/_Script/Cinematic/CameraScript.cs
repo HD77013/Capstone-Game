@@ -42,7 +42,7 @@ public class CameraScript : MonoBehaviour
     {
         Vector3 playerPos = new Vector3(player.position.x, player.position.y, -1f);
         
-        if (!onCutscene || !followPlayer)
+        if (followPlayer)
             camDestination = playerPos;
         
 

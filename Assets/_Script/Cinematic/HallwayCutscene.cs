@@ -11,7 +11,7 @@ public class HallwayCutscene : Cutscene
 
     protected override IEnumerator PlayCutscene()
     {
-        yield return new WaitForSeconds(0.5f);
+        camera.followPlayer = true;
 
         player.move = Vector2.right;
         player.SwitchState(PlayerStateType.Walk);
