@@ -38,13 +38,13 @@ public class HallwayCutscene : Cutscene
         yield return new WaitForSeconds(0.7f);
 
         // Enemy view
-        camera.followPlayer = true;
         camera.followPlayer = false;
         AdjustCam(camPos, 3f, 6.5f);
 
         yield return new WaitForSeconds(0.7f);
 
         // Player view
+        camera.followPlayer = true;
         player.move = Vector2.right;
         player.SwitchState(PlayerStateType.Walk);
 
