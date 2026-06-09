@@ -10,7 +10,11 @@ public class PlayerWalking : PlayerBase
     
     public override void UpdateState(PlayerStateManager state)
     {
-        direction = state.movement.action.ReadValue<Vector2>();
+        if (state.onCutscene)
+            direction = state.move;
+        else
+            direction = state.movement.action.ReadValue<Vector2>();
+
         Vector3 move = new Vector3(direction.x, 0, direction.y);
         
         if (move != Vector3.zero)
@@ -26,13 +30,13 @@ public class PlayerWalking : PlayerBase
             state.SwitchState(PlayerStateType.Idle);
         }
         
-        if (state.input.JumpPressed && Grounded(state))
+        if (state.input.JumpPressed && Grounded(state) && !state.onCutscene)
             state.SwitchState(PlayerStateType.Jumping);
         
-        if (state.input.AttackPressed && Grounded(state) && state.data.EnoughEnergy())
+        if (state.input.AttackPressed && Grounded(state) && state.data.EnoughEnergy() && !state.onCutscene)
             state.SwitchState(PlayerStateType.Attack);
         
-        if (state.input.isBlocking && Grounded(state))
+        if (state.input.isBlocking && Grounded(state) && !state.onCutscene)
             state.SwitchState(PlayerStateType.Blocking);
         
     }

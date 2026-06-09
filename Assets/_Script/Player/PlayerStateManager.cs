@@ -48,8 +48,13 @@ public class PlayerStateManager : MonoBehaviour
     public Transform knockbackSource;
     public float knockbackForce;
     public float knockbackDuration;
-
+    
     [Header("Death")] public bool isDead;
+
+    [Header("Cutscene")]
+    public bool onCutscene;
+    public Vector2 move;
+    
     void Awake()
     {
         stateDictionary = new Dictionary<PlayerStateType, PlayerBase>()

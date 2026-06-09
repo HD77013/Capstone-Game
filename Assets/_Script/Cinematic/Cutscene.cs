@@ -11,7 +11,9 @@ public class Cutscene : MonoBehaviour
     
     public CameraScript camera;
 
-    [Header("Modifiable Variables")]
+    [Header("Modifiable Variables")] 
+    public bool colliderRequired;   // Varies by scene
+    
     public float cutsceneTime;
     public Vector3 camPos;
     public float camSize;
@@ -25,6 +27,8 @@ public class Cutscene : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (colliderRequired) return;
+            
         player = GameObject.Find("Player").GetComponent<PlayerStateManager>();
 
         if (player != null && !cutsceneTriggered)
@@ -42,7 +46,7 @@ public class Cutscene : MonoBehaviour
     }
 
     // Camera work for cutscene
-    void AdjustCam()
+    public void AdjustCam()
     {
         camera.onCutscene = true;
         camera.zoomVal = camSize;
