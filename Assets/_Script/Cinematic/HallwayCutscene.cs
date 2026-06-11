@@ -32,31 +32,28 @@ public class HallwayCutscene : Cutscene
 
         yield return new WaitForSeconds(0.5f);
 
-        SetEnemyChase(false);
-
-        yield return new WaitForSeconds(2.0f);
-
         // Enemy view
-        AdjustCam(camPos, 7.0f, 6.5f);
+        SetCamSize(7.0f, 6.5f);
+        AdjustCam(camPos, 6.5f);
         camera.followPlayer = false;
 
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(1.2f);
 
         SetEnemyChase(false);
-        SetEnemyHostile(false);
 
-        yield return new WaitForSeconds(2.7f);
+        yield return new WaitForSeconds(1.2f);
 
         // Quick cut: player → enemy
         SetCamSize(3.0f, 6.5f);
         camera.followPlayer = true;
 
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(1.5f);
 
-        AdjustCam(camPos, 3.0f, 6.5f);
+        SetCamSize(7.0f, 6.5f);
+        AdjustCam(camPos, 6.5f);
         camera.followPlayer = false;
 
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(1.5f);
 
         SetEnemyChase(true);
 
@@ -76,7 +73,10 @@ public class HallwayCutscene : Cutscene
     private void SetEnemyChase(bool canChase)
     {
         foreach (EnemyScript e in scene.npcs)
+        {
             e.canChase = canChase;
+            e.canFlip = canChase;
+        }
     }
 
     private void SetEnemyHostile(bool hostile)

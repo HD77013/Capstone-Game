@@ -254,6 +254,7 @@ MonoBehaviour:
   cooldown: 0
   detectionThreshold: 25
   canChase: 1
+  wandering: 1
   leftPatrolX: -5
   rightPatrolX: 5
   patrolCenter: {x: 0, y: 0}
@@ -289,6 +290,8 @@ MonoBehaviour:
   wanderPoints: {x: 0, y: 0}
   level: {fileID: 0}
   npcManager: {fileID: 0}
+  allowHostile: 1
+  canFlip: 1
 --- !u!61 &2752318996514342663
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -95,6 +95,7 @@ public class EnemyScript : MonoBehaviour
     public LevelContination level;
     public NextLVL npcManager;
     public bool allowHostile;
+    public bool canFlip;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -329,8 +330,8 @@ public class EnemyScript : MonoBehaviour
 
         if (!canChase)
         {
-            if (transform.position.x >= rightPatrolX + patrolCenter.x ||
-                transform.position.x <= leftPatrolX + patrolCenter.x)
+            if ((transform.position.x >= rightPatrolX + patrolCenter.x ||
+                transform.position.x <= leftPatrolX + patrolCenter.x) && canFlip)
             {
                 facingDirection *= -1;
                 timer = 0;

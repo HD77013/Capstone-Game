@@ -33,9 +33,8 @@ public class Cutscene : MonoBehaviour
         yield break;
     }
 
-    public void AdjustCam(Vector3 pos, float size, float rate)
+    public void AdjustCam(Vector3 pos, float rate)
     {
-        camera.zoomVal = size;
         camera.zoomRate = rate;
         camera.zoomToInitial = true;
         camera.zoom = true;

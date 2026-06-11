@@ -17,7 +17,8 @@ public class BigRoomCutscene : Cutscene
         
         camera.followPlayer = false;
         triggered = true;
-        AdjustCam(camPos, 11f, 6.5f);
+        AdjustCam(camPos, 6.5f);
+        SetCamSize(11.0f, 6.5f);
         BeginCutscene();
     }
 
