@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -58,14 +57,12 @@ public class PlayerDeath : MonoBehaviour
     {
         camera.zoom = false;
         deathScreen.alpha = 0f;
-
-        string firstLVL = SceneManager.GetActiveScene().name;
     
         Destroy(player.gameObject);
         Destroy(camera.gameObject);
         Destroy(UI);
-    
-        SceneManager.LoadScene(firstLVL);
+
+        SceneManager.LoadScene(0);
     }
 
     // Update is called once per frame
