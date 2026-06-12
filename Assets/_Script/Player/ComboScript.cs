@@ -24,6 +24,9 @@ public class ComboScript : MonoBehaviour
     private float comboWindow = 0.5f;
 
     private float lastAttackTime;
+
+    // For tutorial
+    public int bestComboStep;
     private void Update()
     {
         
@@ -42,6 +45,9 @@ public class ComboScript : MonoBehaviour
         {
             Debug.Log("Combo started");
             comboStep = 1;
+
+            if (comboStep > bestComboStep) bestComboStep = comboStep;
+
             animator.Play("Attack 1");
 
             player.isAttacking = true;
@@ -63,6 +69,9 @@ public class ComboScript : MonoBehaviour
         RandomSoundPitching();
         
         comboStep++;
+
+        if (comboStep > bestComboStep) bestComboStep = comboStep;
+
         canCombo = false;
         InputBuffer = false;
         animator.Play("Attack " + comboStep);

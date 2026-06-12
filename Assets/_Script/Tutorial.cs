@@ -20,8 +20,10 @@ public class Tutorial : MonoBehaviour
 
     private TextMeshProUGUI textMesh;
     [SerializeField] private bool queuedTutorial;
-    [SerializeField] private int step = 0; // 0 = move, 1 = jump, 2 = attack
+    [SerializeField] private int step = 0; // 0 = move, 1 = jump, 2 = block
     private int count;
+
+    public int comboCount;
 
     private readonly string[] promptMessages =
     {
@@ -35,7 +37,7 @@ public class Tutorial : MonoBehaviour
     {
         "Use WASD to move",
         "Press space to jump",
-        "Attack 4 times",
+        "Complete Combo (M1 4 times) — 0/{0}", // Meant to be overriden
         "Hold F to Block"
     };
 
@@ -121,6 +123,9 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 2:
+                int best = playerState.combo.bestComboStep;
+                textMesh.text = $"Complete Combo (M1 4 times) — {best}/{playerState.combo.maxCombo}";
+
                 if (playerState.combo.comboStep >= playerState.combo.maxCombo)
                     AdvanceStep();
                 break;
