@@ -85,7 +85,7 @@ public class PlayerScript : MonoBehaviour
         {
             healthRestoreTimer += Time.deltaTime;
 
-            if (healthRestoreTimer >= energyRestoreInterval)
+            if (healthRestoreTimer >= healthRestoreInterval)
             {
                 healthRestoreTimer = 0;
                 health++;
