@@ -36,7 +36,7 @@ public class PlayerDeath : MonoBehaviour
         animator.Play("Death");
         source.PlayOneShot(deathSound);
         
-        Invoke("PrepareDeathScreen", 5.0f);
+        Invoke("PrepareDeathScreen", 2.5f);
     }
 
     void PrepareDeathScreen()
@@ -50,7 +50,7 @@ public class PlayerDeath : MonoBehaviour
     {
         deathScreen.alpha = 1f;
         
-        Invoke("Respawn", 5.0f);
+        Invoke("Respawn", 2.0f);
     }
 
     void Respawn()
