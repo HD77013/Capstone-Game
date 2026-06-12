@@ -342,7 +342,7 @@ public class EnemyScript : MonoBehaviour
 
     private void Attack()
     {
-        if (allowHostile) return;
+        if (!allowHostile) return;
 
         if (Time.time - lastAttackTime >= attackCooldownDuration)
             canAttack = true;
