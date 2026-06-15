@@ -29,6 +29,8 @@ public class NextLVL : MonoBehaviour
     [SerializeField]private InputActionReference next;
     
     public bool onGoingStage;
+
+    public string prompt;
     
 
     void Start()
@@ -60,7 +62,7 @@ public class NextLVL : MonoBehaviour
             if (allDead && !onGoingStage)
             {
                 text.SetActive(true);
-                textMesh.text = "Press ENTER";
+                textMesh.text = prompt;
             }
         }
 
