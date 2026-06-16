@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class Tutorial : MonoBehaviour
 
     private TextMeshProUGUI textMesh;
     [SerializeField] private bool queuedTutorial;
+    public bool onTutorial;
     [SerializeField] private int step = 0; // 0 = move, 1 = jump, 2 = block
     private int count;
 
@@ -81,6 +83,7 @@ public class Tutorial : MonoBehaviour
         // Will start instructing player when conditions are met
         if (queuedTutorial && next.action.WasPressedThisFrame())
         {
+            onTutorial = true;
             queuedTutorial = false;
             cam.zoom = false;
             textMesh.text = instructionMessages[step];
@@ -113,12 +116,13 @@ public class Tutorial : MonoBehaviour
         switch (step)
         {
             case 0:
-                if (move.action.WasPressedThisFrame())
+                if (move.action.WasPressedThisFrame() && onTutorial)
                     AdvanceStep();
+
                 break;
 
             case 1:
-                if (jump.action.WasPressedThisFrame())
+                if (jump.action.WasPressedThisFrame() && onTutorial)
                     AdvanceStep();
                 break;
 
@@ -126,11 +130,11 @@ public class Tutorial : MonoBehaviour
                 int best = playerState.combo.bestComboStep;
                 textMesh.text = $"Complete Combo (M1 4 times) — {best}/{playerState.combo.maxCombo}";
 
-                if (playerState.combo.comboStep >= playerState.combo.maxCombo)
+                if (playerState.combo.comboStep >= playerState.combo.maxCombo && onTutorial)
                     AdvanceStep();
                 break;
             case 3:
-                if (block.action.WasPressedThisFrame())
+                if (block.action.WasPressedThisFrame() && onTutorial)
                     AdvanceStep();
                 break;
         }
@@ -138,6 +142,7 @@ public class Tutorial : MonoBehaviour
 
     void AdvanceStep()
     {
+        onTutorial = false;
         text.SetActive(false);
         step++;
         Invoke(nameof(PromptStep), 5.0f);

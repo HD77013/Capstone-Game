@@ -26,6 +26,7 @@ public class ComboScript : MonoBehaviour
     private float lastAttackTime;
 
     // For tutorial
+    public Tutorial tutorial;
     public int bestComboStep;
     private void Update()
     {
@@ -46,7 +47,7 @@ public class ComboScript : MonoBehaviour
             Debug.Log("Combo started");
             comboStep = 1;
 
-            if (comboStep > bestComboStep) bestComboStep = comboStep;
+            if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
 
             animator.Play("Attack 1");
 
@@ -70,7 +71,7 @@ public class ComboScript : MonoBehaviour
         
         comboStep++;
 
-        if (comboStep > bestComboStep) bestComboStep = comboStep;
+        if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
 
         canCombo = false;
         InputBuffer = false;

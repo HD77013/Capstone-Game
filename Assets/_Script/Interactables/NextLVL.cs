@@ -31,10 +31,14 @@ public class NextLVL : MonoBehaviour
     public bool onGoingStage;
 
     public string prompt;
-    
+
+    public bool resetPlayer;
+    public GameObject camera;
 
     void Start()
     {
+        if (camera == null) camera = GameObject.FindGameObjectWithTag("MainCamera");
+
         if (canvas == null) canvas = GameObject.FindGameObjectWithTag("UI");
 
         if (canvas != null)
@@ -120,6 +124,13 @@ public class NextLVL : MonoBehaviour
         {
             SceneManager.LoadScene(newScene);
             player.transform.position = nextTransformPos;
+
+            if (resetPlayer) 
+            {
+                Destroy(player.gameObject);
+                Destroy(camera.gameObject);
+                Destroy(canvas);
+            }
         }
     }
 }
