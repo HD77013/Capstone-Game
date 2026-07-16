@@ -305,7 +305,7 @@ public class EnemyScript : MonoBehaviour
         isKnockedBack = false;
     }
 
-    bool CheckAttack()
+    public bool CheckAttack()
     {
         return Physics2D.BoxCast(attackPoint.transform.position, atkBox, 0, transform.forward, castDistance, players);
     }
