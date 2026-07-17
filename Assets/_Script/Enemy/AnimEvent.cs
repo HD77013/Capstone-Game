@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
     public EnemyScript enemy;
-
+    public static event Action OnAttackAnimEnded;
+    
+    
     public void DamageCheck()
     {
         enemy.ActivatePlrDMG();
@@ -11,6 +14,8 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     public void EndAttack()
     {
+        OnAttackAnimEnded?.Invoke();
+        
         enemy.EndAttack();
     }
 }
