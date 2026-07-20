@@ -15,11 +15,13 @@ public partial class AttemptAttackPlayerAction : Action
 
     private Animator _enemyAnim;
     private AudioSource _audioSource;
+    private bool _attackFinished;
 
     protected override Status OnStart()
     {
-        NewMonoBehaviourScript.OnAttackAnimEnded += End; 
-        
+        _attackFinished = false;
+        NewMonoBehaviourScript.OnAttackAnimEnded += HandleAttackEnded;
+
         _enemyAnim = Self.Value.GetComponentInChildren<Animator>();
         _audioSource = Self.Value.GetComponent<AudioSource>();
 
@@ -27,32 +29,30 @@ public partial class AttemptAttackPlayerAction : Action
         {
             int animIndex = Random.Range(1, 3);
             _enemyAnim.Play("Attack " + animIndex);
-            
             _audioSource.PlayOneShot(attackSound);
         }
         else
         {
             Debug.Log("Animator or AudioSource is missing!");
+            return Status.Failure; // don't sit in Running forever if refs are missing
         }
-        
+
         return Status.Running;
     }
 
-    private static void End()
+    protected override Status OnUpdate()
     {
-        Debug.Log("End!");
-        Success();
+        return _attackFinished ? Status.Success : Status.Running;
     }
-    
-    private static Status Success()
+
+    private void HandleAttackEnded()
     {
-        Debug.Log("Success!");
-        return Status.Success;
+        _attackFinished = true;
     }
 
     protected override void OnEnd()
     {
-        NewMonoBehaviourScript.OnAttackAnimEnded -= End;
+        NewMonoBehaviourScript.OnAttackAnimEnded -= HandleAttackEnded;
     }
 }
 
