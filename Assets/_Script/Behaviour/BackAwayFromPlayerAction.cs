@@ -20,7 +20,7 @@ public partial class BackAwayFromPlayerAction : Action
     {
         _rb = Self.Value.GetComponent<Rigidbody2D>();
         
-        Distance.Value = Random.Range(2.5f, 5.0f);
+        Distance.Value = Random.Range(5.0f, 10.0f);
         
         return Status.Running;
     }
@@ -34,10 +34,6 @@ public partial class BackAwayFromPlayerAction : Action
         {
             // Too close to the actual player — back away from them directly
             _rb.linearVelocity = new Vector2(Speed.Value * awayDir, _rb.linearVelocity.y);
-        }
-        else
-        {
-            return Status.Success;
         }
 
         return Status.Running;
