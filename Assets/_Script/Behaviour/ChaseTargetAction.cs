@@ -13,7 +13,8 @@ public partial class ChaseTargetAction : Action
     [SerializeReference] public BlackboardVariable<GameObject> Player;
     [SerializeReference] public BlackboardVariable<float> ChaseSpeed;
     [SerializeReference] public BlackboardVariable<float> ChaseOffset;
-
+    [SerializeReference] public BlackboardVariable<EnemyThirdPartyFunctions> movementData;
+    
     private Rigidbody2D _rb;
 
     protected override Status OnStart()
@@ -35,7 +36,9 @@ public partial class ChaseTargetAction : Action
         
         float dir = Mathf.Sign(follow.x);
         
-        _rb.linearVelocity = new Vector2(ChaseSpeed.Value * dir, _rb.linearVelocity.y);
+        Vector2 sep = movementData.Value.GetSeparationVelocity();
+        
+        _rb.linearVelocity = new Vector2(ChaseSpeed.Value * dir + sep.x, _rb.linearVelocity.y);
     //       animator.SetBool("Walking", true);
           
         return Status.Success;
