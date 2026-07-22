@@ -15,7 +15,5 @@ public class NewMonoBehaviourScript : MonoBehaviour
     public void EndAttack()
     {
         OnAttackAnimEnded?.Invoke();
-        
-        enemy.EndAttack();
     }
 }
