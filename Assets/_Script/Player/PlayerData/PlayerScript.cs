@@ -154,7 +154,7 @@ public class PlayerScript : MonoBehaviour
 
         foreach (Collider2D enemyGameObject in enemy)
         {
-            EnemyScript enemyScript = enemyGameObject.GetComponent<EnemyScript>();
+            EnemyThirdPartyFunctions enemyScript = enemyGameObject.GetComponent<EnemyThirdPartyFunctions>();
             
             if (enemyScript != null && !enemyScript.isDead)
             {

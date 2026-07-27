@@ -72,7 +72,7 @@ public class ComboScript : MonoBehaviour
         
         comboStep++;
 
-        if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
+ //       if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
 
         canCombo = false;
         InputBuffer = false;
