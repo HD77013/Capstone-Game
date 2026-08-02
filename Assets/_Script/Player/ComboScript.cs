@@ -72,7 +72,7 @@ public class ComboScript : MonoBehaviour
         
         comboStep++;
 
- //       if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
+        if (comboStep > bestComboStep && tutorial.onTutorial) bestComboStep = comboStep;
 
         canCombo = false;
         InputBuffer = false;
@@ -94,11 +94,7 @@ public class ComboScript : MonoBehaviour
     // Called towards the end of the animation
     public void CloseComboWindow()
     {
-<<<<<<< Updated upstream
         Debug.Log($"CloseComboWindow fired � comboStep: {comboStep}, maxCombo: {maxCombo}, InputBuffer: {InputBuffer}");
-=======
-        Debug.Log($"CloseComboWindow fired — comboStep: {comboStep}, maxCombo: {maxCombo}, InputBuffer: {InputBuffer}");
->>>>>>> Stashed changes
 
         if (InputBuffer && !OnComboCooldown && comboStep < maxCombo) ComboStep();
         else canCombo = false;
