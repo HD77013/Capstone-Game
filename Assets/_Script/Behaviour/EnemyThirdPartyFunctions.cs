@@ -28,7 +28,7 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     
     public float minWalkTime, maxWalkTime;
 
-    private float facingDirection = -1; // 1 right, -1 left
+    public float facingDirection = -1; // 1 right, -1 left
 
     private float randomTime, timer;
     public bool isWalking = false;
@@ -90,10 +90,6 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
         
         float targetX = (player.transform.position.x + chaseTargetOffset) - transform.position.x;
         follow = new Vector2(targetX, player.transform.position.y - transform.position.y);
-
-        if (Mathf.Abs(follow.x) > 0.15f) {
-            facingDirection = follow.x < 0 ? -1f : 1f;
-        }
         
       //  enemyRB.linearVelocity = new Vector2(enemyRB.linearVelocity.x * facingDirection, enemyRB.linearVelocity.y);
         
