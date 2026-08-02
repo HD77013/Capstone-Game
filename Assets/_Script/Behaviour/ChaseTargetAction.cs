@@ -40,6 +40,12 @@ public partial class ChaseTargetAction : Action
         
         _rb.linearVelocity = new Vector2(ChaseSpeed.Value * dir + sep.x, _rb.linearVelocity.y);
     //       animator.SetBool("Walking", true);
+    
+        if (Mathf.Abs(follow.x) > 0.15f) 
+        {
+             Debug.Log("2");
+            movementData.Value.facingDirection = follow.x < 0 ? -1f : 1f;
+        }
           
         return Status.Success;
     }
