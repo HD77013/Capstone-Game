@@ -6,7 +6,7 @@ using UnityEngine;
 [Condition(name: "IsPlayerInAtkRange", story: "If [EnemyScript] detects [Player]", category: "Conditions", id: "71bb6869092f89d46a8fea35809ae86d")]
 public partial class IsPlayerInAtkRangeCondition : Condition
 {
-    [SerializeReference] public BlackboardVariable<EnemyThirdPartyFunctions> EnemyScript;
+    [SerializeReference] public BlackboardVariable<EnemyScript> EnemyScript;
     [SerializeReference] public BlackboardVariable<GameObject> Player;
 
     public override bool IsTrue()

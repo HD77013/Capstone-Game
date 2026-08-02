@@ -11,7 +11,6 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     [SerializeField]private PlayerStateManager _player;
     private ComboScript _combo;
     private FlashScript _flash;
-    public NextLVL npcManager;
     
     public LayerMask players;
     
@@ -29,7 +28,7 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     
     public float minWalkTime, maxWalkTime;
 
-    public float facingDirection = 1; // 1 right, -1 left
+    private float facingDirection = -1; // 1 right, -1 left
 
     private float randomTime, timer;
     public bool isWalking = false;
@@ -50,16 +49,7 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
 
     [SerializeField] private bool isKnockedBack;
 
-    private float Health;
-    
     public bool isDead;
-    public bool isDamaged;
-    public bool isBlocking;
-
-    [Header("Shared Data")] 
-    public Transform target;
-    public float knockbackForce;
-    public float knockbackDuration;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -101,46 +91,12 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
         float targetX = (player.transform.position.x + chaseTargetOffset) - transform.position.x;
         follow = new Vector2(targetX, player.transform.position.y - transform.position.y);
 
-
+        if (Mathf.Abs(follow.x) > 0.15f) {
+            facingDirection = follow.x < 0 ? -1f : 1f;
+        }
         
       //  enemyRB.linearVelocity = new Vector2(enemyRB.linearVelocity.x * facingDirection, enemyRB.linearVelocity.y);
         
-    }
-    
-    public void Damaged(float damage)
-    {
-        isDamaged = true;
-
-        if (!isBlocking)
-        {
-            Health -= damage;
-        }
-        else
-        {
-            isBlocking = false;
-        }
-        
-        
-        if (Health <= 0)
-        {
-            OnDeath();
-        }
-        
-    }
-    
-    // Remove this method as the bool will only be influenced by this script on enemy death. In the future of course
-    void OnDeath()
-    {
-        isDead = true;
-        
-        // npcManager.RequestRemove(this); // The script being used for this line is referencing only to EnemyScript. For the sake of this experimental project, this feature will be omitted.
-            
-        float knockBackForce = Random.Range(50, 90);
-
-        PlayBlood(player.transform);
-        StartCoroutine(Knockback(player.transform, knockBackForce, 2f));
-
-        Destroy(gameObject, 5f);
     }
     
     public void PlayBlood(Transform source)
@@ -151,19 +107,15 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
         blood.SpawnBlood(transform, posDir);
     }
     
-    public IEnumerator Knockback(Transform source , float force, float duration)
+    public IEnumerator Knockback(Transform source , float knockbackForce, float duration)
     {
         isKnockedBack = true;
-
-        target = source;
-        knockbackForce = force;
-        knockbackDuration = duration;
         
-     //   Vector2 directionToTarget = ((Vector2)transform.position - (Vector2)source.position).normalized;
-     //   Vector2 knockbackDir = new Vector2(directionToTarget.x, 0f).normalized;
+        Vector2 directionToTarget = ((Vector2)transform.position - (Vector2)source.position).normalized;
+        Vector2 knockbackDir = new Vector2(directionToTarget.x, 0f).normalized;
         
-      //  enemyRB.linearVelocity = Vector2.zero; // Cancel existing movement
-      //  enemyRB.linearVelocity = new Vector2(knockbackDir.x * knockbackForce, 0f);
+        enemyRB.linearVelocity = Vector2.zero; // Cancel existing movement
+        enemyRB.linearVelocity = new Vector2(knockbackDir.x * knockbackForce, 0f);
         
         yield return new WaitForSeconds(duration);
         
