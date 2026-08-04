@@ -27,20 +27,29 @@ public partial class BackAwayFromPlayerAction : Action
 
     protected override Status OnUpdate()
     {
-        _awayDir = Mathf.Abs(Player.Value.transform.position.x - Self.Value.transform.position.x);
+        float distanceToPlayer = Mathf.Abs(Player.Value.transform.position.x - Self.Value.transform.position.x);
         float awayDir = -Mathf.Sign(Player.Value.transform.position.x - Self.Value.transform.position.x);
-        
-        if (_awayDir < Distance.Value)
+
+        if (distanceToPlayer < Distance.Value)
         {
-            // Too close to the actual player — back away from them directly
+            if (_rb == null) return Status.Failure;
+            
             _rb.linearVelocity = new Vector2(Speed.Value * awayDir, _rb.linearVelocity.y);
+            return Status.Running;
         }
 
-        return Status.Running;
+        _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+        return Status.Success;
     }
 
     protected override void OnEnd()
     {
+        if (_rb != null)
+        {
+            _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+            
+            _rb = null;
+        }
     }
 }
 
