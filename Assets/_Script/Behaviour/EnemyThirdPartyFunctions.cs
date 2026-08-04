@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class EnemyThirdPartyFunctions : MonoBehaviour
 {
@@ -47,9 +49,13 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     
     [SerializeField] private Vector2 follow;
 
-    [SerializeField] private bool isKnockedBack;
+    public bool isKnockedBack;
+    public float force;
+    public Transform attacker;
 
     public bool isDead;
+    
+    private CancellationTokenSource _knockbackCts;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -94,6 +100,30 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
       //  enemyRB.linearVelocity = new Vector2(enemyRB.linearVelocity.x * facingDirection, enemyRB.linearVelocity.y);
         
     }
+
+    public async Task Damaged(float damage, Transform source, float knockbackForce, int duration)
+    {
+        isKnockedBack = true;
+        attacker = transform;
+        force = knockbackForce;
+        
+        _knockbackCts?.Cancel();
+        _knockbackCts = new CancellationTokenSource();
+        var token = _knockbackCts.Token;
+        
+        try
+        {
+            await Task.Delay(duration, token);
+        }
+        catch (TaskCanceledException)
+        {
+            return; // a newer hit superseded this one; let the newer call own the state
+        }
+
+        isKnockedBack = false;
+        attacker = null;
+        force = 0;
+    }   
     
     public void PlayBlood(Transform source)
     {

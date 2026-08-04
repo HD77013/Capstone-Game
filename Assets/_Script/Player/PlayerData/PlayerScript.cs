@@ -26,7 +26,7 @@ public class PlayerScript : MonoBehaviour
     
     [Header("Knockback/Damage Logic (towards enemy)")]
     public float forwardForce;
-    public float knockbackCooldown;
+    public int knockbackCooldown;
     
     [Header("Sounds")]
     public AudioSource soundManager;
@@ -154,25 +154,27 @@ public class PlayerScript : MonoBehaviour
 
         foreach (Collider2D enemyGameObject in enemy)
         {
-            EnemyScript enemyScript = enemyGameObject.GetComponent<EnemyScript>();
-            
+            EnemyThirdPartyFunctions enemyScript = enemyGameObject.GetComponent<EnemyThirdPartyFunctions>();
+
             if (enemyScript != null && !enemyScript.isDead)
             {
-                if (enemyScript.isBlocking)
-                {
-                    AudioClip blocked = blockedSound[combo.comboStep];
-                    soundManager.PlayOneShot(blocked);
-                }
-                else
-                {
-                    AudioClip hits = hitSound[combo.comboStep - 1];
-                    soundManager.PlayOneShot(hits);
-                }
-                
+                //if (enemyScript.isBlocking)
+                //    {
+                //    AudioClip blocked = blockedSound[combo.comboStep];
+                //    soundManager.PlayOneShot(blocked);
+                //     }
+                // else
+                //     {
+                // AudioClip hits = hitSound[combo.comboStep - 1];
+                // soundManager.PlayOneShot(hits);
+                //     }
+
                 camera.shake = 0.05f;
-                
-                enemyScript.Damaged(baseDamage);
-                enemyScript.PlayBlood(transform);
+
+                _ = enemyScript.Damaged(baseDamage, this.transform, 30, knockbackCooldown);
+                //      enemyScript.PlayBlood(transform);
+
+                if (enemyScript == null) Debug.Log("Script is missing!");
 
                 if (!enemyScript.isDead)
                 {
@@ -182,7 +184,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-    
+
     public void PlayBlood(Transform source) // Debate whether this should be moved to Player State
     {
         Vector2 attackerPos = ((Vector2)transform.position - (Vector2)source.position).normalized;
