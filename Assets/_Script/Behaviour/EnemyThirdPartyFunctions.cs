@@ -44,6 +44,14 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     public float separationRadius = 1.2f;
     public float separationForce = 3f;
     
+    [Header("Block")] 
+    public int blockChance;
+    public int blockProbability;
+    
+    private bool isDamaged;
+    public bool isBlocking;
+    public bool hasBlockedThisCombo;
+    
     [Header("Chase")]
     [SerializeField]private float chaseTargetOffset; // Set once in Start()
     
@@ -94,6 +102,39 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
     { 
         if (isDead) return;
         
+        Debug.Log(isBlocking);
+        
+        if (_combo.comboStep == 0)
+        {
+            // Resets block behabiour if player's combo resets
+            hasBlockedThisCombo = false;
+            isBlocking = false;
+        }
+
+        if (_combo.comboStep > 1) isBlocking = false;
+        
+        if (_playerScript.isAttacking && _combo.comboStep <= 1 && !hasBlockedThisCombo)
+        {
+            hasBlockedThisCombo = true;
+            
+            blockChance = Random.Range(0, 101);
+
+            if (blockChance <= blockProbability)
+            {
+                isBlocking = true;
+
+                if (isDamaged)
+                {
+                    isDamaged = false;
+                }
+            }
+            else
+            {
+                isDamaged = false;
+                isBlocking = false;
+            }
+        }
+        
         float targetX = (player.transform.position.x + chaseTargetOffset) - transform.position.x;
         follow = new Vector2(targetX, player.transform.position.y - transform.position.y);
         
@@ -103,6 +144,7 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
 
     public async Task Damaged(float damage, Transform source, float knockbackForce, int duration)
     {
+        isDamaged = true;
         isKnockedBack = true;
         attacker = transform;
         force = knockbackForce;
@@ -110,6 +152,8 @@ public class EnemyThirdPartyFunctions : MonoBehaviour
         _knockbackCts?.Cancel();
         _knockbackCts = new CancellationTokenSource();
         var token = _knockbackCts.Token;
+        
+        _flash.Flash();
         
         try
         {
