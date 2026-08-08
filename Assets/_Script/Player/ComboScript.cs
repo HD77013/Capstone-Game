@@ -44,7 +44,7 @@ public class ComboScript : MonoBehaviour
     {
         if (comboStep == 0)
         {
-            Debug.Log("Combo started");
+       //     Debug.Log("Combo started");
             comboStep = 1;
 
             if (tutorial != null)
@@ -94,7 +94,7 @@ public class ComboScript : MonoBehaviour
     // Called towards the end of the animation
     public void CloseComboWindow()
     {
-        Debug.Log($"CloseComboWindow fired � comboStep: {comboStep}, maxCombo: {maxCombo}, InputBuffer: {InputBuffer}");
+//        Debug.Log($"CloseComboWindow fired � comboStep: {comboStep}, maxCombo: {maxCombo}, InputBuffer: {InputBuffer}");
 
         if (InputBuffer && !OnComboCooldown && comboStep < maxCombo) ComboStep();
         else canCombo = false;

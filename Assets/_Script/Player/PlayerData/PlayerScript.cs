@@ -158,21 +158,21 @@ public class PlayerScript : MonoBehaviour
 
             if (enemyScript != null && !enemyScript.isDead)
             {
-                //if (enemyScript.isBlocking)
-                //    {
-                //    AudioClip blocked = blockedSound[combo.comboStep];
-                //    soundManager.PlayOneShot(blocked);
-                //     }
-                // else
-                //     {
-                // AudioClip hits = hitSound[combo.comboStep - 1];
-                // soundManager.PlayOneShot(hits);
-                //     }
+                if (enemyScript.isBlocking)
+                {
+                    AudioClip blocked = blockedSound[combo.comboStep];
+                    soundManager.PlayOneShot(blocked);
+                }
+                else
+                {
+                 AudioClip hits = hitSound[combo.comboStep - 1];
+                 soundManager.PlayOneShot(hits);
+                }
 
                 camera.shake = 0.05f;
-
-                _ = enemyScript.Damaged(baseDamage, this.transform, 30, knockbackCooldown);
-                //      enemyScript.PlayBlood(transform);
+                
+                _ = enemyScript.Damaged(baseDamage, transform, 30, knockbackCooldown);
+                enemyScript.PlayBlood(transform);
 
                 if (enemyScript == null) Debug.Log("Script is missing!");
 
